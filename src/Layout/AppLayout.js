@@ -3,12 +3,13 @@ import { Layout, Menu } from 'antd';
 import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
-  UserOutlined,
-  VideoCameraOutlined,
-  UploadOutlined,
+  DashboardOutlined,
+  FormOutlined,
+  FileTextOutlined,
 } from '@ant-design/icons';
 
 const { Header, Sider, Content } = Layout;
+const { SubMenu } = Menu;
 
 class AppLayout extends Component {
   state = {
@@ -24,21 +25,43 @@ class AppLayout extends Component {
 
   render() {
     return (
-      <Layout className="xxx">
-        <Sider trigger={null} collapsible collapsed={this.state.collapsed}>
-          <div className="logo" />
+      <Layout className="ddsDashboard">
+        <Sider
+          trigger={null}
+          collapsible
+          collapsed={this.state.collapsed}
+          breakpoint="md"
+          onBreakpoint={broken => {
+            console.log(broken);
+          }}
+          onCollapse={(collapsed, type) => {
+            console.log(collapsed, type);
+          }}
+        >
+          <div className="logo">
+            {this.state.collapsed ? 'DDS' : 'Data Driven Systems'}
+          </div>
           <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
             <Menu.Item key="1">
-              <UserOutlined />
-              <span>nav 1</span>
+              <DashboardOutlined />
+              <span>Dashboard</span>
             </Menu.Item>
-            <Menu.Item key="2">
-              <VideoCameraOutlined />
-              <span>nav 2</span>
-            </Menu.Item>
-            <Menu.Item key="3">
-              <UploadOutlined />
-              <span>nav 3</span>
+            <SubMenu
+              key="sub1"
+              title={
+                <span>
+                  <FormOutlined />
+                  <span>Master</span>
+                </span>
+              }
+            >
+              <Menu.Item key="2">Jabatan</Menu.Item>
+              <Menu.Item key="3">Pegawai</Menu.Item>
+              <Menu.Item key="4">User</Menu.Item>
+            </SubMenu>
+            <Menu.Item key="5">
+              <FileTextOutlined />
+              <span>Laporan absensi</span>
             </Menu.Item>
           </Menu>
         </Sider>
