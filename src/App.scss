@@ -67,3 +67,34 @@
 .site-layout .site-layout-background {
   background: #fff;
 }
+
+.f {
+  display: flex;
+}
+
+.f-c {
+  flex-direction: column;
+}
+
+.f-ctr {
+  justify-content: center;
+}
+
+.f-btw {
+  justify-content: space-between;
+}
+
+.f-rht {
+  justify-content: flex-end;
+}
+
+.mdl {
+  align-items: center;
+}
+
+.f-w {
+  flex-wrap: wrap;
+}
+.t-3s {
+  transition: all .3s ease
+}

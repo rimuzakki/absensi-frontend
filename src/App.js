@@ -1,10 +1,10 @@
 import React from 'react';
-import AppLayout from './Layout/AppLayout';
+import DashboardLayout from './Layout/DashboardLayout';
 import './App.scss';
 
 function App() {
   return (
-    <AppLayout />
+    <DashboardLayout />
   );
 }
 
