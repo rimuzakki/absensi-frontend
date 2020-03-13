@@ -27,33 +27,26 @@ const LaporanAbsensi = Loadable({
   loading: PageLoader,
 });
 
-const Routes = [
+export default [
   {
     path: '/',
     exact: true,
     component: () => (<Index />),
   },
   {
-    path: '/master',
-    child: [
-      {
-        path: '/master/jabatan/',
-        component: () => (<MasterJabatan />),
-      },
-      {
-        path: '/master/pegawai/',
-        component: () => (<MasterPegawai />),
-      },
-      {
-        path: '/master/user/',
-        component: () => (<MasterUser />),
-      },
-    ]
+    path: '/master/jabatan/',
+    component: () => (<MasterJabatan />),
+  },
+  {
+    path: '/master/pegawai/',
+    component: () => (<MasterPegawai />),
+  },
+  {
+    path: '/master/user/',
+    component: () => (<MasterUser />),
   },
   {
     path: '/report',
     component: () => (<LaporanAbsensi />),
   },
 ]
-
-export { Routes };

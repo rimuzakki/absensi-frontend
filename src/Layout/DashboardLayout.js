@@ -12,7 +12,7 @@ import {
 } from '@ant-design/icons';
 import SideMenu from './Partial/SideMenu';
 import FooterApp from './Partial/FooterApp';
-import { Routes } from '../Modules/Dashboard/DashboardRoutes';
+import DashboardRoutes from '../Modules/Dashboard/DashboardRoutes';
 
 
 const { Header, Content } = Layout;
@@ -27,6 +27,18 @@ class DashboardLayout extends Component {
       collapsed: !this.state.collapsed,
     });
   };
+
+  RouteWithSubRoutes = (route) => {
+    return (
+      <Route
+        path={route.path}
+        render={props => (
+          // pass the sub-routes down to keep nesting
+          <route.component {...props} routes={route.child} />
+        )}
+      />
+    );
+  }
 
 
   render() {
@@ -50,12 +62,12 @@ class DashboardLayout extends Component {
               }}
             >
               <Switch>
-                {Routes.map((route, index) => (
+                {DashboardRoutes.map((route, index) => (
                   <Route
                     key={index}
                     path={route.path}
                     exact={route.exact}
-                    children={<route.component />}
+                    children={route.component}
                   />
                 ))}
               </Switch>

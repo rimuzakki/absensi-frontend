@@ -50,7 +50,7 @@ class SideMenu extends Component {
             }
           >
             <Menu.Item key="2">
-              <Link to='/master/pegawai'>
+              <Link to='/master/jabatan'>
                 Jabatan
               </Link>
             </Menu.Item>
@@ -68,8 +68,10 @@ class SideMenu extends Component {
             </Menu.Item>
           </SubMenu>
           <Menu.Item key="5">
-            <FileTextOutlined />
-            <span>Laporan absensi</span>
+            <Link to='/report'>
+              <FileTextOutlined />
+              <span>Laporan absensi</span>
+            </Link>
           </Menu.Item>
         </Menu>
       </Sider>
