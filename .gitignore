@@ -25,3 +25,4 @@ debug.log
 *.log
 
 /debug.log
+*.log
