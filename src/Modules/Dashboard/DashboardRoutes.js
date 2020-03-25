@@ -29,24 +29,24 @@ const LaporanAbsensi = Loadable({
 
 export default [
   {
-    path: '/',
+    path: '/dashboard',
     exact: true,
     component: () => (<Index />),
   },
   {
-    path: '/master/jabatan/',
+    path: '/dashboard/master/jabatan/',
     component: () => (<MasterJabatan />),
   },
   {
-    path: '/master/pegawai/',
+    path: '/dashboard/master/pegawai/',
     component: () => (<MasterPegawai />),
   },
   {
-    path: '/master/user/',
+    path: '/dashboard/master/user/',
     component: () => (<MasterUser />),
   },
   {
-    path: '/report',
+    path: '/dashboard/report',
     component: () => (<LaporanAbsensi />),
   },
 ]

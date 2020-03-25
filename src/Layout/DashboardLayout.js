@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link
+  // BrowserRouter as Router,
+  // Switch,
+  Route
 } from "react-router-dom";
 import { Layout } from 'antd';
 import {
@@ -12,7 +11,7 @@ import {
 } from '@ant-design/icons';
 import SideMenu from './Partial/SideMenu';
 import FooterApp from './Partial/FooterApp';
-import DashboardRoutes from '../Modules/Dashboard/DashboardRoutes';
+// import DashboardRoutes from '../Modules/Dashboard/DashboardRoutes';
 
 
 const { Header, Content } = Layout;
@@ -42,8 +41,9 @@ class DashboardLayout extends Component {
 
 
   render() {
+    const { children } = this.props;
     return (
-      <Router>
+      // <Router>
         <Layout className="ddsDashboard">
           <SideMenu collapsed={this.state.collapsed} />
           <Layout className="site-layout">
@@ -61,7 +61,7 @@ class DashboardLayout extends Component {
                 minHeight: 280,
               }}
             >
-              <Switch>
+              {/* <Switch>
                 {DashboardRoutes.map((route, index) => (
                   <Route
                     key={index}
@@ -70,12 +70,13 @@ class DashboardLayout extends Component {
                     children={route.component}
                   />
                 ))}
-              </Switch>
+              </Switch> */}
+              { children }
             </Content>
             <FooterApp />
           </Layout>
         </Layout>
-      </Router>
+      // </Router>
     );
   }
 }
