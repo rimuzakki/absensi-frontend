@@ -9,7 +9,7 @@ const Absensi = Loadable({
 
 export default [
   {
-    path: '/absensi',
+    path: '/',
     component: () => (<Absensi />),
   },
 ]
