@@ -1,3 +1,22 @@
+$primaryFont: 'Lato', sans-serif;
+$secondaryFont: 'Montserrat', sans-serif;
+$backgroundColor: #F1F9FF;
+$secondaryColor: #2699FB;
+$secondaryForeColor: #fff;
+
+:root {
+  --primaryFont: #{$primaryFont};
+  --secondaryFont: #{$secondaryFont};
+  --backgroundColor: #{$backgroundColor};
+  --secondaryColor: #{$secondaryColor};
+  --secondaryForeColor: #{$secondaryForeColor};
+}
+
+
+body {
+  font-family: $primaryFont;
+  background-color: $backgroundColor;
+}
 .App {
   text-align: center;
 }
