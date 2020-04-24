@@ -1,0 +1,154 @@
+.layout {
+  background: #FFF;
+  height: 100vh;
+}
+.header {
+  background-color: var(--secondaryColor);
+  padding: 0px 65px;
+  ul li span {
+    margin-right: 0px !important;
+  }
+}
+.contentLayout {
+  background: #F1F9FF;
+  margin: 26px 24px;
+  padding: 37px 45px;
+  border-radius: 4px;
+  height: 93%;
+}
+.menu {
+  background-color: var(--secondaryColor);
+  display: flex;
+  justify-content: flex-end;
+  line-height: inherit;
+  position: absolute;
+  right: 65px;
+  li, li:hover {
+    margin-top: 0px !important;
+    border: none !important;
+    color: #fff !important;
+  }
+}
+.logo {
+  width: 95%;
+  height: 31px;
+  margin: 16px 0px;
+  float: left;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.absenArea {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+}
+.dateTimeBox {
+  display: flex;
+  flex-direction: column;
+}
+.time {
+  font-size: 60px;
+  color: var(--secondaryLightColor);
+  font-weight: bold;
+  font-family: var(--secondaryFont);
+  text-align: center;
+  line-height: 70px;
+}
+.date {
+  font-size: 20px;
+  text-align: center;
+  color: var(--secondaryLightColor);
+  font-weight: bold;
+}
+.buttonInOut {
+  margin: 30px 0px;
+}
+.radioButton {
+  label {
+    height: auto;
+    font-weight: bold;
+    padding: 10px 24px;
+  }
+  &:first-child {
+    border-radius: 4px 0px 0px 4px;
+  }
+  &:last-child {
+    border-radius: 0px 4px 4px 0px;
+  }
+}
+
+.qrBox {
+  text-align: center;
+  font-family: var(--secondaryFont);
+  h1 {
+    color: var(--secondaryColor);
+    font-size: 24px;
+    font-weight: bold;
+  }
+  p {
+    font-weight: bold;
+    color: var(--secondaryColor);
+  }
+}
+.qrVideo {
+  margin: 40px auto 36px;
+}
+.formManual {
+  display: flex;
+  justify-content: center;
+  margin-top: 22px;
+  button {
+    margin-left: 10px;
+    padding: 0px 24px;
+    font-weight: bold;
+  }
+  input {
+    max-width: 300px;
+  }
+}
+
+.infoArea {
+  width: 100%;
+  height: 100%;
+  padding: 40px;
+  border: 2px dashed var(--secondaryColor);
+  font-family: var(--secondaryFont);
+  font-size: 18px;
+  text-align: center;
+  color: var(--secondaryColor);
+  h1 {
+    color: var(--secondaryColor);
+    font-size: 28px;
+    margin-bottom: 40px;
+    font-weight: bold;
+    font-family: var(--secondaryFont);
+  }
+}
+.photoUser {
+  border: 2px dashed var(--secondaryColor);
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  margin: 0 auto;
+  margin-bottom: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  span {
+    font-size: 80px;
+  }
+}
+.clockIn {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+.dataIn {
+  display: flex;
+  flex-direction: column;
+  font-weight: bold;
+}

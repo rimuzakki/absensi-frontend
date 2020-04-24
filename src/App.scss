@@ -3,6 +3,7 @@ $secondaryFont: 'Montserrat', sans-serif;
 $backgroundColor: #F1F9FF;
 $secondaryColor: #2699FB;
 $secondaryForeColor: #fff;
+$secondaryLightColor: #7FC4FD;
 
 :root {
   --primaryFont: #{$primaryFont};
@@ -10,6 +11,7 @@ $secondaryForeColor: #fff;
   --backgroundColor: #{$backgroundColor};
   --secondaryColor: #{$secondaryColor};
   --secondaryForeColor: #{$secondaryForeColor};
+  --secondaryLightColor: #{$secondaryLightColor};
 }
 
 
@@ -116,4 +118,8 @@ body {
 }
 .t-3s {
   transition: all .3s ease
+}
+
+.ant-btn, .ant-input {
+  border-radius: 4px !important;
 }
