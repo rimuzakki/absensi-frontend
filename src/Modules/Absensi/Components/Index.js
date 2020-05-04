@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import { Layout, Menu, Row, Col, Radio, Input, Button } from 'antd';
 import QrReader from "react-qr-reader";
 // import QrReader from 'react-qr-scanner';
@@ -60,7 +61,9 @@ class Index extends Component {
         <Header className={s.header}>
           <div className={s.logo}>Data Driven Systems</div>
           <Menu mode="horizontal" className={s.menu}>
-            <Menu.Item key="1"><UserOutlined /></Menu.Item>
+            <Link to='/login'>
+              <Menu.Item key="1"><UserOutlined /></Menu.Item>
+            </Link>
           </Menu>
         </Header>
         <Content>
