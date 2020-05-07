@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
-import { Table } from 'antd';
-import { EyeOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import s from './MasterPegawai.module.scss';
+import { Table, Button, Input } from 'antd';
+import { EyeOutlined, EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+import cx from 'classnames';
+import s from './Master.module.scss';
+
+const { Search } = Input;
 
 class MasterPegawai extends Component {
 
@@ -23,7 +26,7 @@ class MasterPegawai extends Component {
         title: 'ID Pegawai',
         dataIndex: 'idPegawai',
         key: 'idPegawai',
-        render: text => <a href="#" onClick={this.handleView}>{text}</a>,
+        render: text => <a href="/#" onClick={this.handleView}>{text}</a>,
       },
       {
         title: 'Nama',
@@ -52,9 +55,9 @@ class MasterPegawai extends Component {
         key: 'action',
         render: (text, record) => (
           <span className={s.action}>
-            <a href="#" onClick={this.handleView}><EyeOutlined /></a>
-            <a href="#" onClick={this.handleEdit}><EditOutlined /></a>
-            <a href="#" onClick={this.handleDelete}><DeleteOutlined /></a>
+            <a href="/#" onClick={this.handleView}><EyeOutlined /></a>
+            <a href="/#" onClick={this.handleEdit}><EditOutlined /></a>
+            <a href="/#" onClick={this.handleDelete}><DeleteOutlined /></a>
           </span>
         ),
       },
@@ -128,13 +131,33 @@ class MasterPegawai extends Component {
     ]
 
     return (
-      <Table columns={columns} dataSource={data} />
+      <div className={s.cardLayout}>
+        <div className={s.title}>
+          <h3>Master Pegawai</h3>
+        </div>
+
+        <Table columns={columns} dataSource={data} />
+      </div>
     )
   }
 
   render() {
     return (
-      this.viewTable()
+      <div>
+        <div className={cx('f f-btw', s.topSection)}>
+          <Button type="primary" icon={<PlusOutlined />}>
+            Tambah Pegawai
+          </Button>
+          <Search 
+            placeholder="input search text" 
+            onSearch={value => console.log(value)} 
+            enterButton 
+            style={{ width: 280 }}
+          />
+        </div>
+
+        {this.viewTable()}
+      </div>
     );
   }
 }
