@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { Table, Button, Input } from 'antd';
+import { Table, Button, Input, Tooltip } from 'antd';
 import { EyeOutlined, EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import cx from 'classnames';
-import s from './Master.module.scss';
+import s from '../Master.module.scss';
 
 const { Search } = Input;
 
-class MasterPegawai extends Component {
+class MasterUser extends Component {
 
   handleView = () => {
 
@@ -23,9 +23,9 @@ class MasterPegawai extends Component {
   viewTable = () => {
     const columns = [
       {
-        title: 'ID Pegawai',
-        dataIndex: 'idPegawai',
-        key: 'idPegawai',
+        title: 'ID User',
+        dataIndex: 'idUser',
+        key: 'idUser',
         render: text => <a href="/#" onClick={this.handleView}>{text}</a>,
       },
       {
@@ -55,9 +55,15 @@ class MasterPegawai extends Component {
         key: 'action',
         render: (text, record) => (
           <span className={s.action}>
-            <a href="/#" onClick={this.handleView}><EyeOutlined /></a>
-            <a href="/#" onClick={this.handleEdit}><EditOutlined /></a>
-            <a href="/#" onClick={this.handleDelete}><DeleteOutlined /></a>
+            <Tooltip title="Lihat">
+              <a href="/#" onClick={this.handleView}><EyeOutlined /></a>
+            </Tooltip>
+            <Tooltip title="Edit">
+              <a href="/#" onClick={this.handleEdit}><EditOutlined /></a>
+            </Tooltip>
+            <Tooltip title="Hapus">
+              <a href="/#" onClick={this.handleDelete}><DeleteOutlined /></a>
+            </Tooltip>
           </span>
         ),
       },
@@ -66,7 +72,7 @@ class MasterPegawai extends Component {
     const data = [
       {
         key: '1',
-        idPegawai: '1234561',
+        idUser: '1234561',
         name: 'Rifqon Muzakki',
         jabatan: 'Programmer',
         jamKerja: '08.00 - 17.00',
@@ -74,7 +80,7 @@ class MasterPegawai extends Component {
       },
       {
         key: '2',
-        idPegawai: '1234561',
+        idUser: '1234561',
         name: 'Rifqon Muzakki',
         jabatan: 'Programmer',
         jamKerja: '08.00 - 17.00',
@@ -82,7 +88,7 @@ class MasterPegawai extends Component {
       },
       {
         key: '3',
-        idPegawai: '1234561',
+        idUser: '1234561',
         name: 'Rifqon Muzakki',
         jabatan: 'Programmer',
         jamKerja: '08.00 - 17.00',
@@ -90,7 +96,7 @@ class MasterPegawai extends Component {
       },
       {
         key: '4',
-        idPegawai: '1234561',
+        idUser: '1234561',
         name: 'Rifqon Muzakki',
         jabatan: 'Programmer',
         jamKerja: '08.00 - 17.00',
@@ -98,7 +104,7 @@ class MasterPegawai extends Component {
       },
       {
         key: '5',
-        idPegawai: '1234561',
+        idUser: '1234561',
         name: 'Rifqon Muzakki',
         jabatan: 'Programmer',
         jamKerja: '08.00 - 17.00',
@@ -106,7 +112,7 @@ class MasterPegawai extends Component {
       },
       {
         key: '6',
-        idPegawai: '1234561',
+        idUser: '1234561',
         name: 'Rifqon Muzakki',
         jabatan: 'Programmer',
         jamKerja: '08.00 - 17.00',
@@ -114,7 +120,7 @@ class MasterPegawai extends Component {
       },
       {
         key: '7',
-        idPegawai: '1234561',
+        idUser: '1234561',
         name: 'Rifqon Muzakki',
         jabatan: 'Programmer',
         jamKerja: '08.00 - 17.00',
@@ -122,7 +128,7 @@ class MasterPegawai extends Component {
       },
       {
         key: '8',
-        idPegawai: '1234561',
+        idUser: '1234561',
         name: 'Rifqon Muzakki',
         jabatan: 'Programmer',
         jamKerja: '08.00 - 17.00',
@@ -133,7 +139,7 @@ class MasterPegawai extends Component {
     return (
       <div className={s.cardLayout}>
         <div className={s.title}>
-          <h3>Master Pegawai</h3>
+          <h3>Master user</h3>
         </div>
 
         <Table columns={columns} dataSource={data} />
@@ -146,7 +152,7 @@ class MasterPegawai extends Component {
       <div>
         <div className={cx('f f-btw', s.topSection)}>
           <Button type="primary" icon={<PlusOutlined />}>
-            Tambah Pegawai
+            Tambah User
           </Button>
           <Search 
             placeholder="input search text" 
@@ -155,11 +161,10 @@ class MasterPegawai extends Component {
             style={{ width: 280 }}
           />
         </div>
-
         {this.viewTable()}
       </div>
     );
   }
 }
 
-export default MasterPegawai;
+export default MasterUser;

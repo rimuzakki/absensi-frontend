@@ -12,6 +12,24 @@ $secondaryLightColor: #7FC4FD;
   --secondaryColor: #{$secondaryColor};
   --secondaryForeColor: #{$secondaryForeColor};
   --secondaryLightColor: #{$secondaryLightColor};
+
+  --linkColor: #1890ff;
+  --titleColor: rgba(0, 0, 0, .85);
+  --bodyColor: rgba(0, 0, 0, .65);
+  --captionColor: rgba(0, 0, 0, .45);
+  --disableColor: rgba(0, 0, 0, .25);
+  --blankColor: #F0F2F5;
+  --borderColor: #E7EAEF;
+  --iconColor: #BFBFBF;
+  --starColor: #FFC53D;
+  --failColor: #FB5252;
+  --lowPriorityColor: #5FD4E7;
+  --urgentPriorityColor: #F5222D;
+  --criticalPriorityColor: #AF23D9;
+  --w-titleColor: rgba(255, 255, 255, .85);
+  --w-bodyColor: rgba(255, 255, 255, .65);
+  --w-captionColor: rgba(255, 255, 255, .45);
+  --w-disableColor: rgba(255, 255, 255, .25);
 }
 
 
@@ -118,6 +136,22 @@ body {
 }
 .t-3s {
   transition: all .3s ease
+}
+
+.logoutBtn {
+  float: right;
+  margin-right: 30px;
+  color: rgba(0, 0, 0, 0.65);
+  border: none;
+  font-size: 18px;
+  line-height: 64px;
+  padding: 0 24px;
+  cursor: pointer;
+  transition: color 0.3s;
+  height: inherit;
+  &:hover {
+    color: #1890ff;
+  }
 }
 
 // .ant-btn, .ant-input {

@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import { Table, Button, Input } from 'antd';
-import { EyeOutlined, EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+import { Table, Button, DatePicker } from 'antd';
+import { SearchOutlined, PrinterOutlined } from '@ant-design/icons';
 import cx from 'classnames';
-import s from './Master.module.scss';
+import s from '../Master.module.scss';
 
-const { Search } = Input;
 
-class MasterJabatan extends Component {
+class LaporanAbsensi extends Component {
 
   handleView = () => {
 
@@ -20,12 +19,16 @@ class MasterJabatan extends Component {
 
   }
 
+  handleDateChange = (date, dateString) => {
+    console.log(date, dateString);
+  }
+
   viewTable = () => {
     const columns = [
       {
-        title: 'ID Jabatan',
-        dataIndex: 'idJabatan',
-        key: 'idJabatan',
+        title: 'ID Pegawai',
+        dataIndex: 'idPegawai',
+        key: 'idPegawai',
         render: text => <a href="/#" onClick={this.handleView}>{text}</a>,
       },
       {
@@ -46,94 +49,96 @@ class MasterJabatan extends Component {
         key: 'jamKerja',
       },
       {
-        title: 'No Telp',
-        dataIndex: 'noTelp',
-        key: 'noTelp',
+        title: 'Durasi kerja',
+        dataIndex: 'durasiKerja',
+        key: 'durasiKerja',
       },
       {
-        title: 'Action',
-        key: 'action',
-        render: (text, record) => (
-          <span className={s.action}>
-            <a href="/#" onClick={this.handleView}><EyeOutlined /></a>
-            <a href="/#" onClick={this.handleEdit}><EditOutlined /></a>
-            <a href="/#" onClick={this.handleDelete}><DeleteOutlined /></a>
-          </span>
-        ),
+        title: 'Kekuranan jam kerja',
+        dataIndex: 'kekuranganJamKerja',
+        key: 'kekuranganJamKerja',
       },
     ];
 
     const data = [
       {
         key: '1',
-        idJabatan: '1234561',
+        idPegawai: '1234561',
         name: 'Rifqon Muzakki',
         jabatan: 'Programmer',
         jamKerja: '08.00 - 17.00',
-        noTelp: '085111111111',
+        durasiKerja: '40 Jam',
+        kekuranganJamKerja: '0 Jam',
       },
       {
         key: '2',
-        idJabatan: '1234561',
+        idPegawai: '1234561',
         name: 'Rifqon Muzakki',
         jabatan: 'Programmer',
         jamKerja: '08.00 - 17.00',
-        noTelp: '085111111111',
+        durasiKerja: '40 Jam',
+        kekuranganJamKerja: '0 Jam',
       },
       {
         key: '3',
-        idJabatan: '1234561',
+        idPegawai: '1234561',
         name: 'Rifqon Muzakki',
         jabatan: 'Programmer',
         jamKerja: '08.00 - 17.00',
-        noTelp: '085111111111',
+        durasiKerja: '40 Jam',
+        kekuranganJamKerja: '0 Jam',
       },
       {
         key: '4',
-        idJabatan: '1234561',
+        idPegawai: '1234561',
         name: 'Rifqon Muzakki',
         jabatan: 'Programmer',
         jamKerja: '08.00 - 17.00',
-        noTelp: '085111111111',
+        durasiKerja: '40 Jam',
+        kekuranganJamKerja: '0 Jam',
       },
       {
         key: '5',
-        idJabatan: '1234561',
+        idPegawai: '1234561',
         name: 'Rifqon Muzakki',
         jabatan: 'Programmer',
         jamKerja: '08.00 - 17.00',
-        noTelp: '085111111111',
+        durasiKerja: '40 Jam',
+        kekuranganJamKerja: '0 Jam',
       },
       {
         key: '6',
-        idJabatan: '1234561',
+        idPegawai: '1234561',
         name: 'Rifqon Muzakki',
         jabatan: 'Programmer',
         jamKerja: '08.00 - 17.00',
-        noTelp: '085111111111',
+        durasiKerja: '40 Jam',
+        kekuranganJamKerja: '0 Jam',
       },
       {
         key: '7',
-        idJabatan: '1234561',
+        idPegawai: '1234561',
         name: 'Rifqon Muzakki',
         jabatan: 'Programmer',
         jamKerja: '08.00 - 17.00',
-        noTelp: '085111111111',
+        durasiKerja: '40 Jam',
+        kekuranganJamKerja: '0 Jam',
       },
       {
         key: '8',
-        idJabatan: '1234561',
+        idPegawai: '1234561',
         name: 'Rifqon Muzakki',
         jabatan: 'Programmer',
         jamKerja: '08.00 - 17.00',
-        noTelp: '085111111111',
+        durasiKerja: '40 Jam',
+        kekuranganJamKerja: '0 Jam',
       },
     ]
 
     return (
       <div className={s.cardLayout}>
         <div className={s.title}>
-          <h3>Master Jabatan</h3>
+          <h3>Laporan Absensi bulan Januari</h3>
         </div>
 
         <Table columns={columns} dataSource={data} />
@@ -144,16 +149,10 @@ class MasterJabatan extends Component {
   render() {
     return (
       <div>
-        <div className={cx('f f-btw', s.topSection)}>
-          <Button type="primary" icon={<PlusOutlined />}>
-            Tambah Jabatan
-          </Button>
-          <Search 
-            placeholder="input search text" 
-            onSearch={value => console.log(value)} 
-            enterButton 
-            style={{ width: 280 }}
-          />
+        <div className={cx('f', s.topSection, s.topLaporan)}>
+          <DatePicker onChange={this.handleDateChange} picker="month" style={{ marginRight: 12 }}  />
+          <Button type="primary" icon={<SearchOutlined />} />
+          <Button type="primary" icon={<PrinterOutlined />} />
         </div>
         {this.viewTable()}
       </div>
@@ -161,4 +160,4 @@ class MasterJabatan extends Component {
   }
 }
 
-export default MasterJabatan;
+export default LaporanAbsensi;

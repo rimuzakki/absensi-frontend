@@ -8,22 +8,22 @@ const Index = Loadable({
 });
 
 const MasterJabatan = Loadable({
-  loader: () => import('../Dashboard/Components/MasterJabatan'),
+  loader: () => import('./MasterJabatan/MasterJabatan'),
   loading: PageLoader,
 });
 
 const MasterPegawai = Loadable({
-  loader: () => import('../Dashboard/Components/MasterPegawai'),
+  loader: () => import('./MasterPegawai/MasterPegawai'),
   loading: PageLoader,
 });
 
 const MasterUser = Loadable({
-  loader: () => import('../Dashboard/Components/MasterUser'),
+  loader: () => import('./MasterUser/MasterUser'),
   loading: PageLoader,
 });
 
 const LaporanAbsensi = Loadable({
-  loader: () => import('../Dashboard/Components/LaporanAbsensi'),
+  loader: () => import('./LaporanAbsensi/LaporanAbsensi'),
   loading: PageLoader,
 });
 

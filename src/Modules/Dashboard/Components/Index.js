@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Table} from 'antd';
 import { CheckCircleOutlined, ClockCircleOutlined, ExclamationCircleOutlined, PlusCircleOutlined } from '@ant-design/icons';
 // import cx from 'classnames';
-import s from './Master.module.scss';
+import s from '../Master.module.scss';
 
 
 class Index extends Component {
@@ -136,7 +136,7 @@ class Index extends Component {
           <h3>Presensi hari ini</h3>
         </div>
 
-        <Table columns={columns} dataSource={data} scroll={{ y: 350 }} />
+        <Table columns={columns} dataSource={data} scroll={{ y: 380 }} />
       </div>
     )
   }

@@ -4,13 +4,15 @@ import {
   // Switch,
   Route
 } from "react-router-dom";
-import { Layout } from 'antd';
+import { Layout, Button } from 'antd';
 import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
+  LogoutOutlined
 } from '@ant-design/icons';
 import SideMenu from './Partial/SideMenu';
 import FooterApp from './Partial/FooterApp';
+import {confirmLogout} from '../Modules/Auth/Services/AuthService';
 // import DashboardRoutes from '../Modules/Dashboard/DashboardRoutes';
 
 
@@ -52,6 +54,7 @@ class DashboardLayout extends Component {
                 className: 'trigger',
                 onClick: this.toggle,
               })}
+              <Button className='logoutBtn' icon={<LogoutOutlined />} onClick={(e) => confirmLogout(e)} />
             </Header>
             <Content
               // className="site-layout-background"
