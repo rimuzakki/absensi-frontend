@@ -7,6 +7,7 @@ const { confirm } = Modal;
 
 export function logout() {
   localStorage.removeItem('jwtToken');
+  localStorage.removeItem('user');
   window.location.href = '/';
 }
 
@@ -23,4 +24,14 @@ export function confirmLogout(params) {
       logout();
     }
   })
+}
+
+export function getCurrentUser() {
+  return JSON.parse(localStorage.getItem('user'));
+}
+
+export function isAuthenticated() {
+  if (localStorage.getItem('user')) {
+    return JSON.parse(localStorage.getItem('user')) === "authenticated";
+  }
 }

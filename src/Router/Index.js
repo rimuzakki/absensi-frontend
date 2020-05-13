@@ -1,5 +1,6 @@
-import React from 'react'
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+import React from 'react';
+import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
+import { isAuthenticated } from '../Modules/Auth/Services/AuthService';
 
 // Layout
 import DashboardLayout from '../Layout/DashboardLayout';
@@ -16,6 +17,14 @@ const Login = Loadable({
   loading: PageLoader,
 });
 
+const PrivateRoute = ({ children: Component, ...rest }) => (
+  <Route {...rest} render={(props) => (
+    isAuthenticated()
+      ? <Component {...props} />
+      : <Redirect to='/login' />
+  )} />
+)
+
 export default () => {
   return (
     <Router>
@@ -26,7 +35,7 @@ export default () => {
           <DashboardLayout>
             <Switch>
               {DashboardRoutes.map((route, index) => (
-                <Route
+                <PrivateRoute
                   key={index}
                   path={route.path}
                   exact={route.exact}
