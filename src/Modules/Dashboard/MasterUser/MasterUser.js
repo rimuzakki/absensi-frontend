@@ -2,11 +2,24 @@ import React, { Component } from 'react';
 import { Table, Button, Input, Tooltip } from 'antd';
 import { EyeOutlined, EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import cx from 'classnames';
+import axios from 'axios';
 import s from '../Master.module.scss';
 
 const { Search } = Input;
 
 class MasterUser extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      isLoadingData: false,
+      data: [],
+    }
+  }
+
+  componentDidMount() {
+    this.fetchUser();
+  }
 
   handleView = () => {
 
@@ -20,35 +33,46 @@ class MasterUser extends Component {
 
   }
 
+  fetchUser = () => {
+    this.setState({ isLoadingData: true });
+    axios.get(`users/`)
+      .then(res => {
+        console.log('res', res.data);
+        this.setState({
+          data: res.data,
+          isLoadingData: false,
+        })
+      })
+      .catch(err => {
+        this.setState({
+          isLoadingData: false
+        })
+      })
+  }
+
   viewTable = () => {
     const columns = [
       {
-        title: 'ID User',
-        dataIndex: 'idUser',
-        key: 'idUser',
-        render: text => <a href="/#" onClick={this.handleView}>{text}</a>,
-      },
-      {
-        title: 'Nama',
-        dataIndex: 'name',
-        key: 'name',
-        sorter: (a, b) => a.name - b.name,
+        title: 'Name',
+        dataIndex: 'fullname',
+        key: 'fullname',
+        sorter: (a, b) => a.fullname - b.fullname,
         sortDirections: ['descend'],
       },
       {
-        title: 'Jabatan',
-        dataIndex: 'jabatan',
-        key: 'jabatan',
+        title: 'Username',
+        dataIndex: 'username',
+        key: 'username',
       },
       {
-        title: 'Jam kerja',
-        dataIndex: 'jamKerja',
-        key: 'jamKerja',
+        title: 'Email',
+        dataIndex: 'email',
+        key: 'email',
       },
       {
-        title: 'No Telp',
-        dataIndex: 'noTelp',
-        key: 'noTelp',
+        title: 'Role',
+        dataIndex: ['role', 'name'],
+        key: 'role',
       },
       {
         title: 'Action',
@@ -69,80 +93,14 @@ class MasterUser extends Component {
       },
     ];
 
-    const data = [
-      {
-        key: '1',
-        idUser: '1234561',
-        name: 'Rifqon Muzakki',
-        jabatan: 'Programmer',
-        jamKerja: '08.00 - 17.00',
-        noTelp: '085111111111',
-      },
-      {
-        key: '2',
-        idUser: '1234561',
-        name: 'Rifqon Muzakki',
-        jabatan: 'Programmer',
-        jamKerja: '08.00 - 17.00',
-        noTelp: '085111111111',
-      },
-      {
-        key: '3',
-        idUser: '1234561',
-        name: 'Rifqon Muzakki',
-        jabatan: 'Programmer',
-        jamKerja: '08.00 - 17.00',
-        noTelp: '085111111111',
-      },
-      {
-        key: '4',
-        idUser: '1234561',
-        name: 'Rifqon Muzakki',
-        jabatan: 'Programmer',
-        jamKerja: '08.00 - 17.00',
-        noTelp: '085111111111',
-      },
-      {
-        key: '5',
-        idUser: '1234561',
-        name: 'Rifqon Muzakki',
-        jabatan: 'Programmer',
-        jamKerja: '08.00 - 17.00',
-        noTelp: '085111111111',
-      },
-      {
-        key: '6',
-        idUser: '1234561',
-        name: 'Rifqon Muzakki',
-        jabatan: 'Programmer',
-        jamKerja: '08.00 - 17.00',
-        noTelp: '085111111111',
-      },
-      {
-        key: '7',
-        idUser: '1234561',
-        name: 'Rifqon Muzakki',
-        jabatan: 'Programmer',
-        jamKerja: '08.00 - 17.00',
-        noTelp: '085111111111',
-      },
-      {
-        key: '8',
-        idUser: '1234561',
-        name: 'Rifqon Muzakki',
-        jabatan: 'Programmer',
-        jamKerja: '08.00 - 17.00',
-        noTelp: '085111111111',
-      },
-    ]
 
     return (
       <div className={s.cardLayout}>
         <div className={s.title}>
-          <h3>Master user</h3>
+          <h3>Master Users</h3>
         </div>
 
-        <Table columns={columns} dataSource={data} />
+        <Table columns={columns} dataSource={this.state.data} />
       </div>
     )
   }
@@ -152,7 +110,7 @@ class MasterUser extends Component {
       <div>
         <div className={cx('f f-btw', s.topSection)}>
           <Button type="primary" icon={<PlusOutlined />}>
-            Tambah User
+            Add User
           </Button>
           <Search 
             placeholder="input search text" 

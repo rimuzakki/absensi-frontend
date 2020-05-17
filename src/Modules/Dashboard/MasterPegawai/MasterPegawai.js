@@ -2,11 +2,43 @@ import React, { Component } from 'react';
 import { Table, Button, Input, Tooltip } from 'antd';
 import { EyeOutlined, EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import cx from 'classnames';
+import axios from 'axios';
+
 import s from '../Master.module.scss';
 
 const { Search } = Input;
 
 class MasterPegawai extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      isLoadingData: false,
+      data: [],
+      searchData: [],
+    }
+  }
+
+  componentDidMount() {
+    this.fetchEmployee();
+  }
+
+  fetchEmployee = () => {
+    this.setState({ isLoadingData: true });
+    axios.get(`employees/`)
+      .then(res => {
+        console.log('res', res.data);
+        this.setState({
+          data: res.data,
+          isLoadingData: false,
+        })
+      })
+      .catch(err => {
+        this.setState({
+          isLoadingData: false
+        })
+      })
+  }
 
   handleView = () => {
 
@@ -20,35 +52,57 @@ class MasterPegawai extends Component {
 
   }
 
+  handleSearch = (value) => {
+    console.log('value', value)
+    this.setState({ isLoadingData: true });
+    if (value !== '') {
+      axios.get(`employees?fullname_contains=${value}`)
+        .then(res => {
+          // console.log('res', res.data);
+          this.setState({
+            data: res.data,
+            isLoadingData: false,
+          })
+        })
+        .catch(err => {
+          this.setState({
+            isLoadingData: false
+          })
+        })
+    } else {
+      this.fetchEmployee();
+    }
+  }
+
   viewTable = () => {
     const columns = [
       {
-        title: 'ID Pegawai',
-        dataIndex: 'idPegawai',
-        key: 'idPegawai',
-        render: text => <a href="/#" onClick={this.handleView}>{text}</a>,
+        title: 'NIK',
+        dataIndex: 'nik',
+        key: 'nik'
       },
       {
-        title: 'Nama',
-        dataIndex: 'name',
-        key: 'name',
-        sorter: (a, b) => a.name - b.name,
-        sortDirections: ['descend'],
+        title: 'Name',
+        dataIndex: 'fullname',
+        key: 'fullname',
+        sorter: (a, b) => a.fullname.localeCompare(b.fullname),
+        sortDirections: ['descend', 'ascend'],
       },
       {
-        title: 'Jabatan',
-        dataIndex: 'jabatan',
-        key: 'jabatan',
+        title: 'Division',
+        dataIndex: ['division', 'division_name'],
+        key: 'division',
       },
       {
-        title: 'Jam kerja',
-        dataIndex: 'jamKerja',
-        key: 'jamKerja',
+        title: 'Starting hour',
+        dataIndex: ['division', 'work_hours', 'starting_hours'],
+        key: 'starting_hours',
+        render: text => <span>{text} WIB</span>,
       },
       {
-        title: 'No Telp',
-        dataIndex: 'noTelp',
-        key: 'noTelp',
+        title: 'Phone',
+        dataIndex: 'phone',
+        key: 'phone',
       },
       {
         title: 'Action',
@@ -69,80 +123,13 @@ class MasterPegawai extends Component {
       },
     ];
 
-    const data = [
-      {
-        key: '1',
-        idPegawai: '1234561',
-        name: 'Rifqon Muzakki',
-        jabatan: 'Programmer',
-        jamKerja: '08.00 - 17.00',
-        noTelp: '085111111111',
-      },
-      {
-        key: '2',
-        idPegawai: '1234561',
-        name: 'Rifqon Muzakki',
-        jabatan: 'Programmer',
-        jamKerja: '08.00 - 17.00',
-        noTelp: '085111111111',
-      },
-      {
-        key: '3',
-        idPegawai: '1234561',
-        name: 'Rifqon Muzakki',
-        jabatan: 'Programmer',
-        jamKerja: '08.00 - 17.00',
-        noTelp: '085111111111',
-      },
-      {
-        key: '4',
-        idPegawai: '1234561',
-        name: 'Rifqon Muzakki',
-        jabatan: 'Programmer',
-        jamKerja: '08.00 - 17.00',
-        noTelp: '085111111111',
-      },
-      {
-        key: '5',
-        idPegawai: '1234561',
-        name: 'Rifqon Muzakki',
-        jabatan: 'Programmer',
-        jamKerja: '08.00 - 17.00',
-        noTelp: '085111111111',
-      },
-      {
-        key: '6',
-        idPegawai: '1234561',
-        name: 'Rifqon Muzakki',
-        jabatan: 'Programmer',
-        jamKerja: '08.00 - 17.00',
-        noTelp: '085111111111',
-      },
-      {
-        key: '7',
-        idPegawai: '1234561',
-        name: 'Rifqon Muzakki',
-        jabatan: 'Programmer',
-        jamKerja: '08.00 - 17.00',
-        noTelp: '085111111111',
-      },
-      {
-        key: '8',
-        idPegawai: '1234561',
-        name: 'Rifqon Muzakki',
-        jabatan: 'Programmer',
-        jamKerja: '08.00 - 17.00',
-        noTelp: '085111111111',
-      },
-    ]
-
     return (
       <div className={s.cardLayout}>
         <div className={s.title}>
-          <h3>Master Pegawai</h3>
+          <h3>Master Employees</h3>
         </div>
 
-        <Table columns={columns} dataSource={data} />
+        <Table columns={columns} dataSource={this.state.data} />
       </div>
     )
   }
@@ -152,12 +139,13 @@ class MasterPegawai extends Component {
       <div>
         <div className={cx('f f-btw', s.topSection)}>
           <Button type="primary" icon={<PlusOutlined />}>
-            Tambah Pegawai
+            Add Employee
           </Button>
           <Search 
             placeholder="input search text" 
-            onSearch={value => console.log(value)} 
+            onSearch={(value) => this.handleSearch(value)} 
             enterButton 
+            allowClear
             style={{ width: 280 }}
           />
         </div>

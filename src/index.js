@@ -4,10 +4,19 @@ import WebFont from 'webfontloader';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import axios from 'axios';
+
+axios.defaults.baseURL = 'http://localhost:1337/';
+axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+
+const token = localStorage.getItem('jwtToken');
+if (token !== null) {
+  axios.defaults.headers.common['Authorization'] = `bearer ${token}`;
+}
 
 WebFont.load({
   google: {
-    families: ['Montserrat Web:300,400,500,700', 'Lato Web:300,400,700', 'sans-serif']
+    families: ['Montserrat:wght@300;400;500;700', 'Lato:wght@300;400;700', 'sans-serif']
   }
 });
 

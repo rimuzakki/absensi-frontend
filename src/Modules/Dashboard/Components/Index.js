@@ -2,10 +2,42 @@ import React, { Component } from 'react';
 import { Table} from 'antd';
 import { CheckCircleOutlined, ClockCircleOutlined, ExclamationCircleOutlined, PlusCircleOutlined } from '@ant-design/icons';
 // import cx from 'classnames';
+import axios from 'axios';
+import Moment from 'react-moment';
 import s from '../Master.module.scss';
 
 
 class Index extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      isLoadingData: false,
+      data: [],
+    }
+  }
+
+  componentDidMount() {
+    this.fetchEmployee();
+  }
+
+  fetchEmployee = () => {
+    this.setState({ isLoadingData: true });
+    axios.get(`presences/`)
+      .then(res => {
+        console.log('res', res.data);
+        this.setState({
+          data: res.data,
+          isLoadingData: false,
+        })
+      })
+      .catch(err => {
+        this.setState({
+          isLoadingData: false
+        })
+      })
+  }
+
   handleView = () => {
 
   }
@@ -21,122 +53,49 @@ class Index extends Component {
   viewTable = () => {
     const columns = [
       {
-        title: 'ID Pegawai',
-        dataIndex: 'idPegawai',
-        key: 'idPegawai',
-        render: text => <a href="/#" onClick={this.handleView}>{text}</a>,
+        title: 'ID Presence',
+        dataIndex: 'id_presence',
+        key: 'id_presence'
       },
       {
-        title: 'Nama',
-        dataIndex: 'name',
+        title: 'Name',
+        dataIndex: ['employee', 'fullname'],
         key: 'name',
-        sorter: (a, b) => a.name - b.name,
-        sortDirections: ['descend'],
+        sorter: (a, b) => a.fullname.localeCompare(b.fullname),
+        sortDirections: ['descend', 'ascend'],
       },
       {
-        title: 'Jabatan',
-        dataIndex: 'jabatan',
-        key: 'jabatan',
+        title: 'Start hour',
+        dataIndex: 'time_in',
+        key: 'time_in',
+        render: text => <span><Moment format="HH:mm" parse="HH:mm">{text}</Moment></span>,
       },
       {
-        title: 'Jam kerja',
-        dataIndex: 'jamKerja',
-        key: 'jamKerja',
+        title: 'Finish hour',
+        dataIndex: 'time_out',
+        key: 'time_out',
+        render: text => <span><Moment format="HH:mm" parse="HH:mm">{text}</Moment></span>,
       },
       {
-        title: 'Jam Masuk',
-        dataIndex: 'jamMasuk',
-        key: 'jamMasuk',
+        title: 'Minutes late',
+        dataIndex: 'minutes_late',
+        key: 'minutes_late',
       },
       {
-        title: 'Keterangan',
-        dataIndex: 'keterangan',
-        key: 'keterangan',
+        title: 'Status',
+        dataIndex: 'status',
+        key: 'status',
       },
     ];
 
-    const data = [
-      {
-        key: '1',
-        idPegawai: '1234561',
-        name: 'Rifqon Muzakki',
-        jabatan: 'Programmer',
-        jamKerja: '08.00 - 17.00',
-        jamMasuk: '08.00',
-        keterangan: 'Sudah Presensi'
-      },
-      {
-        key: '2',
-        idPegawai: '1234561',
-        name: 'Rifqon Muzakki',
-        jabatan: 'Programmer',
-        jamKerja: '08.00 - 17.00',
-        jamMasuk: '08.00',
-        keterangan: 'Sudah Presensi'
-      },
-      {
-        key: '3',
-        idPegawai: '1234561',
-        name: 'Rifqon Muzakki',
-        jabatan: 'Programmer',
-        jamKerja: '08.00 - 17.00',
-        jamMasuk: '08.00',
-        keterangan: 'Sudah Presensi'
-      },
-      {
-        key: '4',
-        idPegawai: '1234561',
-        name: 'Rifqon Muzakki',
-        jabatan: 'Programmer',
-        jamKerja: '08.00 - 17.00',
-        jamMasuk: '08.00',
-        keterangan: 'Sudah Presensi'
-      },
-      {
-        key: '5',
-        idPegawai: '1234561',
-        name: 'Rifqon Muzakki',
-        jabatan: 'Programmer',
-        jamKerja: '08.00 - 17.00',
-        jamMasuk: '08.00',
-        keterangan: 'Sudah Presensi'
-      },
-      {
-        key: '6',
-        idPegawai: '1234561',
-        name: 'Rifqon Muzakki',
-        jabatan: 'Programmer',
-        jamKerja: '08.00 - 17.00',
-        jamMasuk: '08.00',
-        keterangan: 'Sudah Presensi'
-      },
-      {
-        key: '7',
-        idPegawai: '1234561',
-        name: 'Rifqon Muzakki',
-        jabatan: 'Programmer',
-        jamKerja: '08.00 - 17.00',
-        jamMasuk: '08.00',
-        keterangan: 'Sudah Presensi'
-      },
-      {
-        key: '8',
-        idPegawai: '1234561',
-        name: 'Rifqon Muzakki',
-        jabatan: 'Programmer',
-        jamKerja: '08.00 - 17.00',
-        jamMasuk: '08.00',
-        keterangan: 'Sudah Presensi'
-      },
-    ]
 
     return (
       <div className={s.cardLayout}>
         <div className={s.title}>
-          <h3>Presensi hari ini</h3>
+          <h3>Todays presence</h3>
         </div>
 
-        <Table columns={columns} dataSource={data} scroll={{ y: 380 }} />
+        <Table columns={columns} dataSource={this.state.data} scroll={{ y: 380 }} />
       </div>
     )
   }
@@ -145,23 +104,23 @@ class Index extends Component {
     return (
       <div className={s.cardSection}>
         <div className={s.card}>
-          <h3><CheckCircleOutlined /> Sudah Presensi</h3>
-          <p>10 <small>orang</small></p>
+          <h3><CheckCircleOutlined /> Already presence</h3>
+          <p>10 <small>employee(s)</small></p>
         </div>
 
         <div className={s.card}>
-          <h3><ClockCircleOutlined /> Belum Presensi</h3>
-          <p>5 <small>orang</small></p>
+          <h3><ClockCircleOutlined /> Not presence yet</h3>
+          <p>5 <small>employee(s)</small></p>
         </div>
 
         <div className={s.card}>
-          <h3><ExclamationCircleOutlined /> Terlambat</h3>
-          <p>2 <small>orang</small></p>
+          <h3><ExclamationCircleOutlined /> Late</h3>
+          <p>2 <small>employee(s)</small></p>
         </div>
 
         <div className={s.card}>
-          <h3><PlusCircleOutlined /> Total Pegawai</h3>
-          <p>15 <small>orang</small></p>
+          <h3><PlusCircleOutlined /> Total employee</h3>
+          <p>15 <small>employee(s)</small></p>
         </div>
       </div>
     )

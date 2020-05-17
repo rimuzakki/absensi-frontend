@@ -1,11 +1,42 @@
 import React, { Component } from 'react';
 import { Table, Button, DatePicker } from 'antd';
 import { SearchOutlined, PrinterOutlined } from '@ant-design/icons';
+// import Moment from 'react-moment';
 import cx from 'classnames';
+import axios from 'axios';
 import s from '../Master.module.scss';
 
 
 class LaporanAbsensi extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      isLoadingData: false,
+      data: [],
+    }
+  }
+
+  componentDidMount() {
+    this.fetchEmployee();
+  }
+
+  fetchEmployee = () => {
+    this.setState({ isLoadingData: true });
+    axios.get(`employees/`)
+      .then(res => {
+        console.log('res', res.data);
+        this.setState({
+          data: res.data,
+          isLoadingData: false,
+        })
+      })
+      .catch(err => {
+        this.setState({
+          isLoadingData: false
+        })
+      })
+  }
 
   handleView = () => {
 
@@ -26,122 +57,46 @@ class LaporanAbsensi extends Component {
   viewTable = () => {
     const columns = [
       {
-        title: 'ID Pegawai',
-        dataIndex: 'idPegawai',
-        key: 'idPegawai',
-        render: text => <a href="/#" onClick={this.handleView}>{text}</a>,
+        title: 'NIK',
+        dataIndex: 'nik',
+        key: 'nik'
       },
       {
-        title: 'Nama',
-        dataIndex: 'name',
-        key: 'name',
-        sorter: (a, b) => a.name - b.name,
-        sortDirections: ['descend'],
+        title: 'Name',
+        dataIndex: 'fullname',
+        key: 'fullname',
+        sorter: (a, b) => a.fullname.localeCompare(b.fullname),
+        sortDirections: ['descend', 'ascend'],
       },
       {
-        title: 'Jabatan',
-        dataIndex: 'jabatan',
-        key: 'jabatan',
+        title: 'Division',
+        dataIndex: ['division', 'division_name'],
+        key: 'division',
       },
       {
-        title: 'Jam kerja',
-        dataIndex: 'jamKerja',
-        key: 'jamKerja',
+        title: 'Start hour',
+        dataIndex: ['division', 'work_hours', 'starting_hours'],
+        key: 'starting_hours',
       },
       {
-        title: 'Durasi kerja',
-        dataIndex: 'durasiKerja',
-        key: 'durasiKerja',
+        title: 'Finish hour',
+        dataIndex: ['division', 'work_hours', 'finish_hours'],
+        key: 'finish_hours',
       },
       {
-        title: 'Kekuranan jam kerja',
-        dataIndex: 'kekuranganJamKerja',
-        key: 'kekuranganJamKerja',
-      },
+        title: 'Duration of work hours',
+        dataIndex: ['presences', 'work_minutes_duration'],
+        key: 'work_minutes_duration'
+      }
     ];
-
-    const data = [
-      {
-        key: '1',
-        idPegawai: '1234561',
-        name: 'Rifqon Muzakki',
-        jabatan: 'Programmer',
-        jamKerja: '08.00 - 17.00',
-        durasiKerja: '40 Jam',
-        kekuranganJamKerja: '0 Jam',
-      },
-      {
-        key: '2',
-        idPegawai: '1234561',
-        name: 'Rifqon Muzakki',
-        jabatan: 'Programmer',
-        jamKerja: '08.00 - 17.00',
-        durasiKerja: '40 Jam',
-        kekuranganJamKerja: '0 Jam',
-      },
-      {
-        key: '3',
-        idPegawai: '1234561',
-        name: 'Rifqon Muzakki',
-        jabatan: 'Programmer',
-        jamKerja: '08.00 - 17.00',
-        durasiKerja: '40 Jam',
-        kekuranganJamKerja: '0 Jam',
-      },
-      {
-        key: '4',
-        idPegawai: '1234561',
-        name: 'Rifqon Muzakki',
-        jabatan: 'Programmer',
-        jamKerja: '08.00 - 17.00',
-        durasiKerja: '40 Jam',
-        kekuranganJamKerja: '0 Jam',
-      },
-      {
-        key: '5',
-        idPegawai: '1234561',
-        name: 'Rifqon Muzakki',
-        jabatan: 'Programmer',
-        jamKerja: '08.00 - 17.00',
-        durasiKerja: '40 Jam',
-        kekuranganJamKerja: '0 Jam',
-      },
-      {
-        key: '6',
-        idPegawai: '1234561',
-        name: 'Rifqon Muzakki',
-        jabatan: 'Programmer',
-        jamKerja: '08.00 - 17.00',
-        durasiKerja: '40 Jam',
-        kekuranganJamKerja: '0 Jam',
-      },
-      {
-        key: '7',
-        idPegawai: '1234561',
-        name: 'Rifqon Muzakki',
-        jabatan: 'Programmer',
-        jamKerja: '08.00 - 17.00',
-        durasiKerja: '40 Jam',
-        kekuranganJamKerja: '0 Jam',
-      },
-      {
-        key: '8',
-        idPegawai: '1234561',
-        name: 'Rifqon Muzakki',
-        jabatan: 'Programmer',
-        jamKerja: '08.00 - 17.00',
-        durasiKerja: '40 Jam',
-        kekuranganJamKerja: '0 Jam',
-      },
-    ]
 
     return (
       <div className={s.cardLayout}>
         <div className={s.title}>
-          <h3>Laporan Absensi bulan Januari</h3>
+          <h3>January presences report </h3>
         </div>
 
-        <Table columns={columns} dataSource={data} />
+        <Table columns={columns} dataSource={this.state.data} />
       </div>
     )
   }

@@ -2,11 +2,41 @@ import React, { Component } from 'react';
 import { Table, Button, Input, Tooltip } from 'antd';
 import { EyeOutlined, EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import cx from 'classnames';
+import axios from 'axios';
 import s from '../Master.module.scss';
 
 const { Search } = Input;
 
 class MasterJabatan extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      isLoadingData: false,
+      data: [],
+    }
+  }
+
+  componentDidMount() {
+    this.fetchEmployee();
+  }
+
+  fetchEmployee = () => {
+    this.setState({ isLoadingData: true });
+    axios.get(`divisions/`)
+      .then(res => {
+        console.log('res', res.data);
+        this.setState({
+          data: res.data,
+          isLoadingData: false,
+        })
+      })
+      .catch(err => {
+        this.setState({
+          isLoadingData: false
+        })
+      })
+  }
 
   handleView = () => {
 
@@ -23,32 +53,34 @@ class MasterJabatan extends Component {
   viewTable = () => {
     const columns = [
       {
-        title: 'ID Jabatan',
-        dataIndex: 'idJabatan',
-        key: 'idJabatan',
-        render: text => <a href="/#" onClick={this.handleView}>{text}</a>,
+        title: 'ID Division',
+        dataIndex: 'id',
+        key: 'id',
       },
       {
-        title: 'Nama',
-        dataIndex: 'name',
-        key: 'name',
-        sorter: (a, b) => a.name - b.name,
-        sortDirections: ['descend'],
+        title: 'Division name',
+        dataIndex: 'division_name',
+        key: 'division_name',
+        sorter: (a, b) => a.division_name.localeCompare(b.division_name),
+        sortDirections: ['descend', 'ascend'],
       },
       {
-        title: 'Jabatan',
-        dataIndex: 'jabatan',
-        key: 'jabatan',
+        title: 'Start hour',
+        dataIndex: ['work_hours', 'starting_hours'],
+        key: 'starting_hour',
+        render: text => <span>{text} WIB</span>,
       },
       {
-        title: 'Jam kerja',
-        dataIndex: 'jamKerja',
-        key: 'jamKerja',
+        title: 'Finish hour',
+        dataIndex: ['work_hours', 'finish_hours'],
+        key: 'finish_hour',
+        render: text => <span>{text} WIB</span>,
       },
       {
-        title: 'No Telp',
-        dataIndex: 'noTelp',
-        key: 'noTelp',
+        title: 'Total hours',
+        dataIndex: ['work_hours', 'total_hours'],
+        key: 'total_hours',
+        render: text => <span>{text} hours</span>,
       },
       {
         title: 'Action',
@@ -69,80 +101,14 @@ class MasterJabatan extends Component {
       },
     ];
 
-    const data = [
-      {
-        key: '1',
-        idJabatan: '1234561',
-        name: 'Rifqon Muzakki',
-        jabatan: 'Programmer',
-        jamKerja: '08.00 - 17.00',
-        noTelp: '085111111111',
-      },
-      {
-        key: '2',
-        idJabatan: '1234561',
-        name: 'Rifqon Muzakki',
-        jabatan: 'Programmer',
-        jamKerja: '08.00 - 17.00',
-        noTelp: '085111111111',
-      },
-      {
-        key: '3',
-        idJabatan: '1234561',
-        name: 'Rifqon Muzakki',
-        jabatan: 'Programmer',
-        jamKerja: '08.00 - 17.00',
-        noTelp: '085111111111',
-      },
-      {
-        key: '4',
-        idJabatan: '1234561',
-        name: 'Rifqon Muzakki',
-        jabatan: 'Programmer',
-        jamKerja: '08.00 - 17.00',
-        noTelp: '085111111111',
-      },
-      {
-        key: '5',
-        idJabatan: '1234561',
-        name: 'Rifqon Muzakki',
-        jabatan: 'Programmer',
-        jamKerja: '08.00 - 17.00',
-        noTelp: '085111111111',
-      },
-      {
-        key: '6',
-        idJabatan: '1234561',
-        name: 'Rifqon Muzakki',
-        jabatan: 'Programmer',
-        jamKerja: '08.00 - 17.00',
-        noTelp: '085111111111',
-      },
-      {
-        key: '7',
-        idJabatan: '1234561',
-        name: 'Rifqon Muzakki',
-        jabatan: 'Programmer',
-        jamKerja: '08.00 - 17.00',
-        noTelp: '085111111111',
-      },
-      {
-        key: '8',
-        idJabatan: '1234561',
-        name: 'Rifqon Muzakki',
-        jabatan: 'Programmer',
-        jamKerja: '08.00 - 17.00',
-        noTelp: '085111111111',
-      },
-    ]
 
     return (
       <div className={s.cardLayout}>
         <div className={s.title}>
-          <h3>Master Jabatan</h3>
+          <h3>Master Divisions</h3>
         </div>
 
-        <Table columns={columns} dataSource={data} />
+        <Table columns={columns} dataSource={this.state.data} />
       </div>
     )
   }
@@ -152,7 +118,7 @@ class MasterJabatan extends Component {
       <div>
         <div className={cx('f f-btw', s.topSection)}>
           <Button type="primary" icon={<PlusOutlined />}>
-            Tambah Jabatan
+            Add Division
           </Button>
           <Search 
             placeholder="input search text" 
