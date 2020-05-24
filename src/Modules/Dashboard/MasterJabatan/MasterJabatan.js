@@ -3,6 +3,8 @@ import { Table, Button, Input, Tooltip } from 'antd';
 import { EyeOutlined, EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import cx from 'classnames';
 import axios from 'axios';
+// import DivisionModalForm from './DivisionModalForm';
+import DivisionForm from './DivisionForm';
 import s from '../Master.module.scss';
 
 const { Search } = Input;
@@ -14,18 +16,23 @@ class MasterJabatan extends Component {
     this.state = {
       isLoadingData: false,
       data: [],
+      modalVisible: false,
+      title: '',
+      status: '',
+      dataId: '',
+      modalKey: Math.random(),
     }
   }
 
   componentDidMount() {
-    this.fetchEmployee();
+    this.fetchDivisions();
   }
 
-  fetchEmployee = () => {
+  fetchDivisions = () => {
     this.setState({ isLoadingData: true });
     axios.get(`divisions/`)
       .then(res => {
-        console.log('res', res.data);
+        // console.log('res', res.data);
         this.setState({
           data: res.data,
           isLoadingData: false,
@@ -38,9 +45,39 @@ class MasterJabatan extends Component {
       })
   }
 
-  handleView = () => {
-
+  handleCreate = () => {
+    this.setState({
+      title: "Create new division",
+      modalVisible: true,
+      dataId: '',
+      status: 'create',
+      modalKey: Math.random(),
+    })
   }
+
+  handleView = (data, status) => {
+    this.setState({
+      dataId: data,
+      modalVisible: true,
+      title: 'View Division',
+      status, 
+      modalKey: Math.random(),
+    });
+  }
+
+  handleOk = e => {
+    console.log(e);
+    this.setState({
+      modalVisible: false,
+    });
+  };
+
+  handleCancel = e => {
+    console.log(e);
+    this.setState({
+      modalVisible: false,
+    });
+  };
 
   handleEdit = () => {
 
@@ -48,6 +85,28 @@ class MasterJabatan extends Component {
 
   handleDelete = () => {
 
+  }
+
+  handleSearch = (value) => {
+    console.log('value', value)
+    this.setState({ isLoadingData: true });
+    if (value !== '') {
+      axios.get(`divisions?division_name_contains=${value}`)
+        .then(res => {
+          // console.log('res', res.data);
+          this.setState({
+            data: res.data,
+            isLoadingData: false,
+          })
+        })
+        .catch(err => {
+          this.setState({
+            isLoadingData: false
+          })
+        })
+    } else {
+      this.fetchEmployee();
+    }
   }
 
   viewTable = () => {
@@ -65,15 +124,20 @@ class MasterJabatan extends Component {
         sortDirections: ['descend', 'ascend'],
       },
       {
+        title: 'Work type',
+        dataIndex: ['work_hours', 'work_type'],
+        key: 'work_type',
+      },
+      {
         title: 'Start hour',
         dataIndex: ['work_hours', 'starting_hours'],
-        key: 'starting_hour',
+        key: 'starting_hours',
         render: text => <span>{text} WIB</span>,
       },
       {
         title: 'Finish hour',
         dataIndex: ['work_hours', 'finish_hours'],
-        key: 'finish_hour',
+        key: 'finish_hours',
         render: text => <span>{text} WIB</span>,
       },
       {
@@ -88,13 +152,13 @@ class MasterJabatan extends Component {
         render: (text, record) => (
           <span className={s.action}>
             <Tooltip title="Lihat">
-              <a href="/#" onClick={this.handleView}><EyeOutlined /></a>
+              <Button type="link" icon={<EyeOutlined />} onClick={() => this.handleView(record.id, 'view')} />
             </Tooltip>
             <Tooltip title="Edit">
-              <a href="/#" onClick={this.handleEdit}><EditOutlined /></a>
+              <Button type="link" icon={<EditOutlined />} onClick={this.handleEdit} />
             </Tooltip>
             <Tooltip title="Hapus">
-              <a href="/#" onClick={this.handleDelete}><DeleteOutlined /></a>
+              <Button type="link" icon={<DeleteOutlined />} onClick={this.handleDelete} />
             </Tooltip>
           </span>
         ),
@@ -108,7 +172,7 @@ class MasterJabatan extends Component {
           <h3>Master Divisions</h3>
         </div>
 
-        <Table columns={columns} dataSource={this.state.data} />
+        <Table columns={columns} dataSource={this.state.data} loading={this.state.isLoadingData} />
       </div>
     )
   }
@@ -117,17 +181,41 @@ class MasterJabatan extends Component {
     return (
       <div>
         <div className={cx('f f-btw', s.topSection)}>
-          <Button type="primary" icon={<PlusOutlined />}>
+          <Button type="primary" icon={<PlusOutlined />} onClick={this.handleCreate}>
             Add Division
           </Button>
           <Search 
             placeholder="input search text" 
-            onSearch={value => console.log(value)} 
+            onSearch={(value) => this.handleSearch(value)} 
             enterButton 
+            allowClear
             style={{ width: 280 }}
           />
         </div>
         {this.viewTable()}
+
+        {this.state.modalVisible &&
+          // <DivisionModalForm
+          //   modalKey={this.state.modalKey}
+          //   visible={this.state.modalVisible}
+          //   onOk={this.handleOk}
+          //   onCancel={this.handleCancel}
+          //   loading={this.state.isLoadingData}
+          //   title={this.state.title}
+          //   data={this.state.dataId}
+          //   status={this.state.status}
+          // />
+          <DivisionForm
+            modalKey={this.state.modalKey}
+            visible={this.state.modalVisible}
+            onOk={this.handleOk}
+            onCancel={this.handleCancel}
+            loading={this.state.isLoadingData}
+            title={this.state.title}
+            data={this.state.dataId}
+            status={this.state.status}
+          />
+        }
       </div>
     );
   }
