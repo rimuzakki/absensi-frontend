@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Form, Input, Row, Col, Select, notification, Spin, Button } from 'antd';
+import { 
+  Modal, Form, Input, Row, Col, Select, notification, Spin, Button, 
+  TimePicker, InputNumber
+} from 'antd';
+import moment from 'moment';
 import axios from 'axios';
 
 const { Option } = Select;
@@ -45,21 +49,44 @@ function DivisionForm(props) {
       }
   }, [props.data]);
 
-  const handleSubmit = values => {
-    console.log('Received values of form: ', values);
+  const handleSubmit = (values, status) => {
+    // console.log('Received values of form: ', values);
+    // console.log('status', status);
+
+    // setLoadingData(true);
+    const data = {
+      division_name: values.divisionName,
+      work_hours: {
+        work_type: values.workType,
+        total_hours: values.totalHours,
+        starting_hours: values['startHours'].format('HH:mm'),
+        finish_hours: values['finishHours'].format('HH:mm'),
+      }
+    }
+
+    if (status === 'create') {
+      props.onCreate(data)
+    } else {
+      props.onUpdate(data)
+    }
   };
 
   const ViewForm = () => {
+    const format = 'HH:mm';
     // const [form] = Form.useForm();
-    if (props.status === 'view') {
+    if (props.status === 'view' || props.status === 'edit') {
       form.setFieldsValue({
         divisionName,
         workType,
         totalHours,
-        startHours,
-        finishHours
+        startHours: moment(startHours, format),
+        finishHours: moment(finishHours, format),
       })
     }
+    
+    const config = {
+      rules: [{ type: 'object', required: true, message: 'Please select time!' }],
+    };
     return (
       <Form
         form={form}
@@ -74,6 +101,7 @@ function DivisionForm(props) {
         //   startHours: startHours,
         //   finishHours: finishHours
         // }}
+        initialValues={ props.status !== 'view' ? {workType: 'normal'} : null}
       >
         <Row>
           <Col span={24} >
@@ -102,11 +130,11 @@ function DivisionForm(props) {
             </Form.Item>
 
             <Form.Item
-              label="Total hours"
+              label="Total hours (hours)"
               name="totalHours"
               rules={[{ required: true, message: 'Please input total hours!' }]}
             >
-              <Input 
+              <InputNumber 
                 // onChange={this.handleChange} 
                 disabled={props.status === 'view' ? true : false} />
             </Form.Item>
@@ -114,19 +142,25 @@ function DivisionForm(props) {
             <Form.Item
               label="Start hours"
               name="startHours"
+              {...config}
             >
-              <Input 
-                // onChange={this.handleChange} 
-                disabled={props.status === 'view' ? true : false} />
+              
+              <TimePicker
+                format={format}
+                disabled={props.status === 'view' ? true : false}
+              />
             </Form.Item>
 
             <Form.Item
               label="Finish hours"
               name="finishHours"
+              {...config}
             >
-              <Input 
-                // onChange={this.handleChange} 
-                disabled={props.status === 'view' ? true : false} />
+              
+              <TimePicker
+                format={format}
+                disabled={props.status === 'view' ? true : false}
+              />
             </Form.Item>
 
           </Col>
@@ -166,7 +200,7 @@ function DivisionForm(props) {
                 form.validateFields()
                   .then(values => {
                     form.resetFields();
-                    handleSubmit(values);
+                    handleSubmit(values, props.status);
                   })
                   .catch(info => {
                     console.log('Validate Failed:', info);

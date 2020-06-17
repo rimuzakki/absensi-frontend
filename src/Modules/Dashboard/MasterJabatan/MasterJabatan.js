@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { Table, Button, Input, Tooltip } from 'antd';
+import { Table, Button, Input, Tooltip, message, Popconfirm } from 'antd';
 import { EyeOutlined, EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import cx from 'classnames';
 import axios from 'axios';
 // import DivisionModalForm from './DivisionModalForm';
 import DivisionForm from './DivisionForm';
+// import _ from 'lodash';
 import s from '../Master.module.scss';
 
 const { Search } = Input;
@@ -21,6 +22,10 @@ class MasterJabatan extends Component {
       status: '',
       dataId: '',
       modalKey: Math.random(),
+      currentPage: 1,
+      pageSize: 8,
+      total: 8,
+      search: '',
     }
   }
 
@@ -43,6 +48,12 @@ class MasterJabatan extends Component {
           isLoadingData: false
         })
       })
+  }
+
+  handleChange = (e) => {
+    this.setState({
+      [e.target.name]: e.target.value
+    })
   }
 
   handleCreate = () => {
@@ -73,23 +84,45 @@ class MasterJabatan extends Component {
   };
 
   handleCancel = e => {
-    console.log(e);
+    // console.log(e);
     this.setState({
       modalVisible: false,
     });
   };
 
-  handleEdit = () => {
-
+  handleEdit = (e, data, status) => {
+    e.preventDefault();
+    console.log('data', data)
+    this.setState({
+      dataId: data,
+      modalVisible: true,
+      title: 'View Division',
+      status, 
+      modalKey: Math.random(),
+    });
   }
 
-  handleDelete = () => {
-
+  handleDelete = (data) => {
+    // console.log(data)
+    this.setState({ isLoadingData: true, currentPage: 1 });
+    axios.delete(`divisions/${data}`)
+      .then(res => {
+        this.setState({
+          // data: res.data,
+          isLoadingData: false,
+        })
+        this.fetchDivisions();
+      })
+      .catch(err => {
+        this.setState({
+          isLoadingData: false
+        })
+      })
   }
 
   handleSearch = (value) => {
-    console.log('value', value)
-    this.setState({ isLoadingData: true });
+    // console.log('value', value)
+    this.setState({ isLoadingData: true, currentPage: 1 });
     if (value !== '') {
       axios.get(`divisions?division_name_contains=${value}`)
         .then(res => {
@@ -105,8 +138,54 @@ class MasterJabatan extends Component {
           })
         })
     } else {
-      this.fetchEmployee();
+      this.fetchDivisions();
     }
+  }
+
+  handlePaginationClick = (e) => {
+    this.setState({
+      currentPage: e,
+      isLoadingData: false
+    })
+  }
+
+  onCreate = (data) => {
+    // console.log('onCreate', {data});
+    this.setState({
+      isLoadingData: true,
+    })
+    axios.post(`divisions/` , data)
+      .then(result => {
+        // console.log('xxx', result);
+        message.success('Division created');
+        this.fetchDivisions();
+      }).catch(error => {
+        message.error('Create division not successfull')
+      })
+      this.setState({
+        isLoadingData: false,
+        modalVisible: false,
+      })
+  }
+
+  onUpdate = (data) => {
+    // console.log('onCreate', {data});
+    const { dataId } = this.state;
+    this.setState({
+      isLoadingData: true,
+    })
+    axios.put(`divisions/${dataId}` , data)
+      .then(result => {
+        // console.log('xxx', result);
+        message.success('Division edited');
+        this.fetchDivisions();
+      }).catch(error => {
+        message.error('Edit division not successfull')
+      })
+      this.setState({
+        isLoadingData: false,
+        modalVisible: false,
+      })
   }
 
   viewTable = () => {
@@ -155,16 +234,25 @@ class MasterJabatan extends Component {
               <Button type="link" icon={<EyeOutlined />} onClick={() => this.handleView(record.id, 'view')} />
             </Tooltip>
             <Tooltip title="Edit">
-              <Button type="link" icon={<EditOutlined />} onClick={this.handleEdit} />
+              <Button type="link" icon={<EditOutlined />} onClick={(e) => this.handleEdit(e, record.id, 'edit')} />
             </Tooltip>
             <Tooltip title="Hapus">
-              <Button type="link" icon={<DeleteOutlined />} onClick={this.handleDelete} />
+              <Popconfirm
+                title="Are you sure delete this task?"
+                onConfirm={() => this.handleDelete(record.id)}
+                // onCancel={cancel}
+                okText="Delete"
+                cancelText="Cancel"
+              >
+                <Button type="link" icon={<DeleteOutlined />} />
+              </Popconfirm>
             </Tooltip>
           </span>
         ),
       },
     ];
 
+    let uniqueId = 0;
 
     return (
       <div className={s.cardLayout}>
@@ -172,7 +260,23 @@ class MasterJabatan extends Component {
           <h3>Master Divisions</h3>
         </div>
 
-        <Table columns={columns} dataSource={this.state.data} loading={this.state.isLoadingData} />
+        <Table 
+          columns={columns} 
+          dataSource={this.state.data} 
+          loading={this.state.isLoadingData} 
+          rowKey={(record) => {
+            if (!record.__uniqueId)
+              record.__uniqueId = ++uniqueId;
+            return record.__uniqueId;
+          }}
+          pagination={{ 
+            position: 'bottom', 
+            current: this.state.currentPage, 
+            pageSize: this.state.pageSize, 
+            // total: this.state.total, 
+            onChange: this.handlePaginationClick
+          }}
+        />
       </div>
     )
   }
@@ -185,8 +289,10 @@ class MasterJabatan extends Component {
             Add Division
           </Button>
           <Search 
+            name="search"
             placeholder="input search text" 
             onSearch={(value) => this.handleSearch(value)} 
+            onChange={this.handleChange}
             enterButton 
             allowClear
             style={{ width: 280 }}
@@ -214,6 +320,8 @@ class MasterJabatan extends Component {
             title={this.state.title}
             data={this.state.dataId}
             status={this.state.status}
+            onCreate={this.onCreate}
+            onUpdate={this.onUpdate}
           />
         }
       </div>

@@ -25,7 +25,7 @@ class LaporanAbsensi extends Component {
     this.setState({ isLoadingData: true });
     axios.get(`employees/`)
       .then(res => {
-        console.log('res', res.data);
+        // console.log('res', res.data);
         this.setState({
           data: res.data,
           isLoadingData: false,

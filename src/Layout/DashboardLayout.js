@@ -14,6 +14,7 @@ import SideMenu from './Partial/SideMenu';
 import FooterApp from './Partial/FooterApp';
 import {confirmLogout} from '../Modules/Auth/Services/AuthService';
 // import DashboardRoutes from '../Modules/Dashboard/DashboardRoutes';
+import { Scrollbars } from 'react-custom-scrollbars';
 
 
 const { Header, Content } = Layout;
@@ -56,26 +57,31 @@ class DashboardLayout extends Component {
               })}
               <Button className='logoutBtn' icon={<LogoutOutlined />} onClick={(e) => confirmLogout(e)} />
             </Header>
-            <Content
-              // className="site-layout-background"
-              style={{
-                margin: '24px 16px',
-                padding: 12,
-                minHeight: 280,
-              }}
+            <Scrollbars
+              autoHide
+              style={{ height: '90vh' }}
             >
-              {/* <Switch>
-                {DashboardRoutes.map((route, index) => (
-                  <Route
-                    key={index}
-                    path={route.path}
-                    exact={route.exact}
-                    children={route.component}
-                  />
-                ))}
-              </Switch> */}
-              { children }
-            </Content>
+              <Content
+                // className="site-layout-background"
+                style={{
+                  margin: '24px 16px',
+                  padding: 12,
+                  minHeight: 280,
+                }}
+              >
+                {/* <Switch>
+                  {DashboardRoutes.map((route, index) => (
+                    <Route
+                      key={index}
+                      path={route.path}
+                      exact={route.exact}
+                      children={route.component}
+                    />
+                  ))}
+                </Switch> */}
+                { children }
+              </Content>
+            </Scrollbars>
             <FooterApp />
           </Layout>
         </Layout>
