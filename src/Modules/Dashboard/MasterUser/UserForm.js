@@ -1,23 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Modal, Form, Input, Row, Col, Select, notification, Spin, Button, 
-  TimePicker, InputNumber
+  Switch
 } from 'antd';
-import moment from 'moment';
+// import moment from 'moment';
 import axios from 'axios';
 
 const { Option } = Select;
 
-function DivisionForm(props) {
-  // const [data, setData] = useState([]);
-  // const [modalVisible, setModalVisible] = useState(false);
-  // const [disabledForm, setDisabledForm] = useState(false);
+function UserForm(props) {
   const [loadingData, setLoadingData] = useState(false);
-  const [divisionName, setDivisionName] = useState('');
-  const [totalHours, setTotalHours] = useState('');
-  const [workType, setWorkType] = useState('');
-  const [startHours, setStartHours] = useState('');
-  const [finishHours, setFinishHours] = useState('');
+  const [fullname, setFullname] = useState('');
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmed, setConfirmed] = useState(false);
+  const [blocked, setBlocked] = useState(false);
+  const [role, setRole] = useState('');
+
+
 
   const [form] = Form.useForm();
 
@@ -26,14 +27,15 @@ function DivisionForm(props) {
       setLoadingData(true);
 
       try {
-        const response = await axios.get(`divisions/${props.data}`);
+        const response = await axios.get(`users/${props.data}`);
         // setData(response.data);
         setLoadingData(false);
-        setDivisionName(response.data.division_name);
-        setTotalHours(response.data.work_hours.total_hours);
-        setWorkType(response.data.work_hours.work_type);
-        setStartHours(response.data.work_hours.starting_hours);
-        setFinishHours(response.data.work_hours.finish_hours);
+        setFullname(response.data.fullname);
+        setUsername(response.data.username);
+        setEmail(response.data.email);
+        setConfirmed(response.data.confirmed);
+        setBlocked(response.data.blocked);
+        setRole(response.data.role);
 
       } catch (error) {
         notification.error({
@@ -55,12 +57,13 @@ function DivisionForm(props) {
 
     // setLoadingData(true);
     const data = {
-      division_name: values.divisionName,
-      work_hours: {
-        work_type: values.workType,
-        total_hours: values.totalHours,
-        starting_hours: values['startHours'].format('HH:mm'),
-        finish_hours: values['finishHours'].format('HH:mm'),
+      fullname: values.fullname,
+      username: values.username,
+      email: values.email,
+      confirmed: values.confirmed,
+      blocked: values.blocked,
+      role: {
+        id: values.role,
       }
     }
 
@@ -71,22 +74,20 @@ function DivisionForm(props) {
     }
   };
 
+
   const ViewForm = () => {
-    const format = 'HH:mm';
     // const [form] = Form.useForm();
     if (props.status === 'view' || props.status === 'edit') {
       form.setFieldsValue({
-        divisionName,
-        workType,
-        totalHours,
-        startHours: moment(startHours, format),
-        finishHours: moment(finishHours, format),
+        fullname,
+        username,
+        email,
+        // confirmed,
+        // blocked,
+        // role,
       })
     }
     
-    const config = {
-      rules: [{ type: 'object', required: true, message: 'Please select time!' }],
-    };
     return (
       <Form
         form={form}
@@ -101,14 +102,14 @@ function DivisionForm(props) {
         //   startHours: startHours,
         //   finishHours: finishHours
         // }}
-        initialValues={ props.status !== 'view' ? {workType: 'normal'} : null}
+        // initialValues={ confirmed }
       >
         <Row>
           <Col span={24} >
             <Form.Item
-              label="Name"
-              name="divisionName"
-              rules={[{ required: true, message: 'Please input division name!' }]}
+              label="Fullname"
+              name="fullname"
+              rules={[{ required: true, message: 'Please input full name!' }]}
             >
               <Input 
                 // onChange={this.handleChange} 
@@ -117,49 +118,46 @@ function DivisionForm(props) {
             </Form.Item>
 
             <Form.Item
-              label="Work type"
-              name="workType"
-              rules={[{ required: true, message: 'Please select work type!' }]}
+              label="Username"
+              name="username"
+              rules={[{ required: true, message: 'Please input username!' }]}
             >
-              <Select defaultValue="normal" disabled={props.status === 'view' ? true : false} style={{ width: 120 }} 
-                // onChange={this.handleChange}
-              >
-                <Option value="normal">Normal</Option>
-                <Option value="free">Free</Option>
-              </Select>
-            </Form.Item>
-
-            <Form.Item
-              label="Total hours (hours)"
-              name="totalHours"
-              rules={[{ required: true, message: 'Please input total hours!' }]}
-            >
-              <InputNumber 
+              <Input 
                 // onChange={this.handleChange} 
-                disabled={props.status === 'view' ? true : false} />
-            </Form.Item>
-
-            <Form.Item
-              label="Start hours"
-              name="startHours"
-              {...config}
-            >
-              
-              <TimePicker
-                format={format}
-                disabled={props.status === 'view' ? true : false}
+                disabled={props.status === 'view' ? true : false} 
               />
             </Form.Item>
 
             <Form.Item
-              label="Finish hours"
-              name="finishHours"
-              {...config}
+              label="Email"
+              name="email"
+              rules={[{ type: 'email', required: true, message: 'Please input email!' }]}
             >
-              
-              <TimePicker
-                format={format}
-                disabled={props.status === 'view' ? true : false}
+              <Input 
+                // onChange={this.handleChange} 
+                disabled={props.status === 'view' ? true : false} 
+              />
+            </Form.Item>
+
+            <Form.Item 
+              label="Confirmed"
+              name="confirmed"  
+            >
+              <Switch
+                checked={confirmed}
+                checkedChildren="True" unCheckedChildren="False"
+                disabled={props.status === 'view' ? true : false}  
+              />
+            </Form.Item>
+
+            <Form.Item 
+              label="Blocked"
+              name="blocked"  
+            >
+              <Switch
+                checked={blocked} 
+                checkedChildren="True" unCheckedChildren="False"
+                disabled={props.status === 'view' ? true : false}  
               />
             </Form.Item>
 
@@ -228,4 +226,4 @@ function DivisionForm(props) {
   )
 }
 
-export default DivisionForm;
+export default UserForm;

@@ -3,6 +3,7 @@ import { Table, Button, Input, Tooltip } from 'antd';
 import { EyeOutlined, EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import cx from 'classnames';
 import axios from 'axios';
+import UserForm from './UserForm';
 import s from '../Master.module.scss';
 
 const { Search } = Input;
@@ -14,6 +15,15 @@ class MasterUser extends Component {
     this.state = {
       isLoadingData: false,
       data: [],
+      modalVisible: false,
+      title: '',
+      status: '',
+      dataId: '',
+      modalKey: Math.random(),
+      currentPage: 1,
+      pageSize: 8,
+      total: 8,
+      search: '',
     }
   }
 
@@ -21,8 +31,14 @@ class MasterUser extends Component {
     this.fetchUser();
   }
 
-  handleView = () => {
-
+  handleView = (data, status) => {
+    this.setState({
+      dataId: data,
+      modalVisible: true,
+      title: 'View Division',
+      status, 
+      modalKey: Math.random(),
+    });
   }
 
   handleEdit = () => {
@@ -32,6 +48,20 @@ class MasterUser extends Component {
   handleDelete = () => {
 
   }
+
+  handleOk = e => {
+    console.log(e);
+    this.setState({
+      modalVisible: false,
+    });
+  };
+
+  handleCancel = e => {
+    // console.log(e);
+    this.setState({
+      modalVisible: false,
+    });
+  };
 
   fetchUser = () => {
     this.setState({ isLoadingData: true });
@@ -80,7 +110,7 @@ class MasterUser extends Component {
         render: (text, record) => (
           <span className={s.action}>
             <Tooltip title="Lihat">
-              <a href="/#" onClick={this.handleView}><EyeOutlined /></a>
+            <Button type="link" icon={<EyeOutlined />} onClick={() => this.handleView(record.id, 'view')} />
             </Tooltip>
             <Tooltip title="Edit">
               <a href="/#" onClick={this.handleEdit}><EditOutlined /></a>
@@ -93,6 +123,7 @@ class MasterUser extends Component {
       },
     ];
 
+    let uniqueId = 0;
 
     return (
       <div className={s.cardLayout}>
@@ -100,7 +131,22 @@ class MasterUser extends Component {
           <h3>Master Users</h3>
         </div>
 
-        <Table columns={columns} dataSource={this.state.data} />
+        <Table 
+          columns={columns} 
+          dataSource={this.state.data} 
+          rowKey={(record) => {
+            if (!record.__uniqueId)
+              record.__uniqueId = ++uniqueId;
+            return record.__uniqueId;
+          }}
+          pagination={{ 
+            position: 'bottom', 
+            current: this.state.currentPage, 
+            pageSize: this.state.pageSize, 
+            // total: this.state.total, 
+            onChange: this.handlePaginationClick
+          }}  
+        />
       </div>
     )
   }
@@ -120,6 +166,21 @@ class MasterUser extends Component {
           />
         </div>
         {this.viewTable()}
+
+        {this.state.modalVisible &&
+          <UserForm
+            modalKey={this.state.modalKey}
+            visible={this.state.modalVisible}
+            onOk={this.handleOk}
+            onCancel={this.handleCancel}
+            loading={this.state.isLoadingData}
+            title={this.state.title}
+            data={this.state.dataId}
+            status={this.state.status}
+            onCreate={this.onCreate}
+            onUpdate={this.onUpdate}
+          />
+        }
       </div>
     );
   }
