@@ -96,7 +96,7 @@ class MasterJabatan extends Component {
     this.setState({
       dataId: data,
       modalVisible: true,
-      title: 'View Division',
+      title: 'Edit Division',
       status, 
       modalKey: Math.random(),
     });

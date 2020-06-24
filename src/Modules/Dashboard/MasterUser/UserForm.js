@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  Modal, Form, Input, Row, Col, Select, notification, Spin, Button, 
-  Switch
+  Modal, Form, Input, Row, Col, notification, Spin, Button, 
+  Switch, Select
+  // Select
 } from 'antd';
 // import moment from 'moment';
 import axios from 'axios';
@@ -13,7 +14,7 @@ function UserForm(props) {
   const [fullname, setFullname] = useState('');
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  // const [password, setPassword] = useState('');
   const [confirmed, setConfirmed] = useState(false);
   const [blocked, setBlocked] = useState(false);
   const [role, setRole] = useState('');
@@ -35,7 +36,7 @@ function UserForm(props) {
         setEmail(response.data.email);
         setConfirmed(response.data.confirmed);
         setBlocked(response.data.blocked);
-        setRole(response.data.role);
+        setRole(response.data.role.id);
 
       } catch (error) {
         notification.error({
@@ -84,7 +85,7 @@ function UserForm(props) {
         email,
         // confirmed,
         // blocked,
-        // role,
+        role,
       })
     }
     
@@ -93,16 +94,6 @@ function UserForm(props) {
         form={form}
         layout="vertical"
         hideRequiredMark
-        // onFinish={this.handleSubmit}
-        // onFinishFailed={this.onFinishFailed}
-        // initialValues={{ 
-        //   divisionName: divisionName,
-        //   workType: workType,
-        //   totalHours: totalHours,
-        //   startHours: startHours,
-        //   finishHours: finishHours
-        // }}
-        // initialValues={ confirmed }
       >
         <Row>
           <Col span={24} >
@@ -137,6 +128,21 @@ function UserForm(props) {
                 // onChange={this.handleChange} 
                 disabled={props.status === 'view' ? true : false} 
               />
+            </Form.Item>
+
+            <Form.Item 
+              label="Role" 
+              name="role" 
+              rules={[{ required: true, message: 'Please input role!' }]}>
+
+              <Select
+                // defaultValue={role}
+                placeholder="Select a role"
+                // onChange={onGenderChange}
+              >
+                <Option key="1" value={1}>Authenticated</Option>
+                <Option key="2" value={2}>Public</Option>
+              </Select>
             </Form.Item>
 
             <Form.Item 
