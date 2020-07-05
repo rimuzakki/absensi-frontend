@@ -4,6 +4,8 @@ import { CheckCircleOutlined, ClockCircleOutlined, ExclamationCircleOutlined, Pl
 // import cx from 'classnames';
 import axios from 'axios';
 import Moment from 'react-moment';
+import { connect } from 'react-redux';
+import {setBreadcrumb} from '../../../Redux/Actions';
 import s from '../Master.module.scss';
 
 
@@ -19,6 +21,7 @@ class Index extends Component {
 
   componentDidMount() {
     this.fetchEmployee();
+    this.props.setBreadcrumb('Dashboard');
   }
 
   fetchEmployee = () => {
@@ -136,4 +139,10 @@ class Index extends Component {
   }
 }
 
-export default Index;
+const mapStateToProps = (state) => {
+  return {
+    breadcrumb: state.breadcrumb,
+  }
+}
+
+export default connect(mapStateToProps, { setBreadcrumb })(Index);

@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
-import { Table, Button, Input, Tooltip } from 'antd';
+import { Table, Button, Input, Tooltip, Popconfirm, message } from 'antd';
 import { EyeOutlined, EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import cx from 'classnames';
 import axios from 'axios';
+import { connect } from 'react-redux';
+import {setBreadcrumb} from '../../../Redux/Actions';
+import EmployeeForm from './EmployeeForm';
 
 import s from '../Master.module.scss';
 
@@ -16,14 +19,24 @@ class MasterPegawai extends Component {
       isLoadingData: false,
       data: [],
       searchData: [],
+      modalVisible: false,
+      title: '',
+      status: '',
+      dataId: '',
+      modalKey: Math.random(),
+      currentPage: 1,
+      pageSize: 8,
+      total: 8,
+      search: '',
     }
   }
 
   componentDidMount() {
-    this.fetchEmployee();
+    this.props.setBreadcrumb('Employees');
+    this.fetchEmployees();
   }
 
-  fetchEmployee = () => {
+  fetchEmployees = () => {
     this.setState({ isLoadingData: true });
     axios.get(`employees/`)
       .then(res => {
@@ -40,21 +53,112 @@ class MasterPegawai extends Component {
       })
   }
 
-  handleView = () => {
-
+  onCreate = (data) => {
+    // console.log('onCreate', {data});
+    this.setState({
+      isLoadingData: true,
+    })
+    axios.post(`employees/` , data)
+      .then(result => {
+        message.success('employee created');
+        this.fetchEmployees();
+      }).catch(error => {
+        message.error('Create employee not successfull')
+      })
+      this.setState({
+        isLoadingData: false,
+        modalVisible: false,
+      })
   }
 
-  handleEdit = () => {
-
+  onUpdate = (data) => {
+    // console.log('onCreate', {data});
+    const { dataId } = this.state;
+    this.setState({
+      isLoadingData: true,
+    })
+    axios.put(`employees/${dataId}` , data)
+      .then(result => {
+        // console.log('xxx', result);
+        message.success('Employee edited');
+        this.fetchEmployees();
+      }).catch(error => {
+        message.error('Edit employee not successfull')
+      })
+      this.setState({
+        isLoadingData: false,
+        modalVisible: false,
+      })
   }
 
-  handleDelete = () => {
+  handleOk = e => {
+    // console.log(e);
+    this.setState({
+      modalVisible: false,
+    });
+  };
 
+  handleCancel = e => {
+    // console.log(e);
+    this.setState({
+      modalVisible: false,
+    });
+  };
+
+  handleCreate = () => {
+    this.setState({
+      title: "Create new employee",
+      modalVisible: true,
+      dataId: '',
+      status: 'create',
+      modalKey: Math.random(),
+    })
+  }
+
+  handleView = (data, status) => {
+    this.setState({
+      dataId: data,
+      modalVisible: true,
+      title: 'View Employee',
+      status, 
+      modalKey: Math.random(),
+    });
+  }
+
+  handleEdit = (e, data, status) => {
+    e.preventDefault();
+    console.log('data', data)
+    this.setState({
+      dataId: data,
+      modalVisible: true,
+      title: 'Edit Employee',
+      status, 
+      modalKey: Math.random(),
+    });
+  }
+
+
+  handleDelete = (data) => {
+    // console.log(data)
+    this.setState({ isLoadingData: true, currentPage: 1 });
+    axios.delete(`employees/${data}`)
+      .then(res => {
+        this.setState({
+          // data: res.data,
+          isLoadingData: false,
+        })
+        this.fetchEmployees();
+      })
+      .catch(err => {
+        this.setState({
+          isLoadingData: false
+        })
+      })
   }
 
   handleSearch = (value) => {
     console.log('value', value)
-    this.setState({ isLoadingData: true });
+    this.setState({ isLoadingData: true, currentPage: 1 });
     if (value !== '') {
       axios.get(`employees?fullname_contains=${value}`)
         .then(res => {
@@ -70,8 +174,15 @@ class MasterPegawai extends Component {
           })
         })
     } else {
-      this.fetchEmployee();
+      this.fetchEmployees();
     }
+  }
+
+  handlePaginationClick = (e) => {
+    this.setState({
+      currentPage: e,
+      isLoadingData: false
+    })
   }
 
   viewTable = () => {
@@ -110,18 +221,28 @@ class MasterPegawai extends Component {
         render: (text, record) => (
           <span className={s.action}>
             <Tooltip title="Lihat">
-              <a href="/#" onClick={this.handleView}><EyeOutlined /></a>
+              <Button type="link" icon={<EyeOutlined />} onClick={() => this.handleView(record.id, 'view')} />
             </Tooltip>
             <Tooltip title="Edit">
-              <a href="/#" onClick={this.handleEdit}><EditOutlined /></a>
+              <Button type="link" icon={<EditOutlined />} onClick={(e) => this.handleEdit(e, record.id, 'edit')} />
             </Tooltip>
             <Tooltip title="Hapus">
-              <a href="/#" onClick={this.handleDelete}><DeleteOutlined /></a>
+              <Popconfirm
+                title="Are you sure delete this task?"
+                onConfirm={() => this.handleDelete(record.id)}
+                // onCancel={cancel}
+                okText="Delete"
+                cancelText="Cancel"
+              >
+                <Button type="link" icon={<DeleteOutlined />} />
+              </Popconfirm>
             </Tooltip>
           </span>
         ),
       },
     ];
+
+    let uniqueId = 0;
 
     return (
       <div className={s.cardLayout}>
@@ -129,7 +250,23 @@ class MasterPegawai extends Component {
           <h3>Master Employees</h3>
         </div>
 
-        <Table columns={columns} dataSource={this.state.data} />
+        <Table 
+          columns={columns} 
+          dataSource={this.state.data} 
+          loading={this.state.isLoadingData} 
+          rowKey={(record) => {
+            if (!record.__uniqueId)
+              record.__uniqueId = ++uniqueId;
+            return record.__uniqueId;
+          }}
+          pagination={{ 
+            position: 'bottom', 
+            current: this.state.currentPage, 
+            pageSize: this.state.pageSize, 
+            // total: this.state.total, 
+            onChange: this.handlePaginationClick
+          }}
+        />
       </div>
     )
   }
@@ -138,7 +275,7 @@ class MasterPegawai extends Component {
     return (
       <div>
         <div className={cx('f f-btw', s.topSection)}>
-          <Button type="primary" icon={<PlusOutlined />}>
+          <Button type="primary" icon={<PlusOutlined />} onClick={this.handleCreate}>
             Add Employee
           </Button>
           <Search 
@@ -151,9 +288,30 @@ class MasterPegawai extends Component {
         </div>
 
         {this.viewTable()}
+
+        {this.state.modalVisible &&
+          <EmployeeForm
+            onOk={this.handleOk}
+            onCancel={this.handleCancel}
+            modalKey={this.state.modalKey}
+            visible={this.state.modalVisible}
+            loading={this.state.isLoadingData}
+            title={this.state.title}
+            data={this.state.dataId}
+            status={this.state.status}
+            onCreate={this.onCreate}
+            onUpdate={this.onUpdate}
+          />
+        }
       </div>
     );
   }
 }
 
-export default MasterPegawai;
+const mapStateToProps = (state) => {
+  return {
+    breadcrumb: state.breadcrumb,
+  }
+}
+
+export default connect(mapStateToProps, { setBreadcrumb })(MasterPegawai);

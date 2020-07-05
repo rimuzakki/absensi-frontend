@@ -7,6 +7,8 @@ import axios from 'axios';
 import DivisionForm from './DivisionForm';
 // import _ from 'lodash';
 import s from '../Master.module.scss';
+import { connect } from 'react-redux';
+import {setBreadcrumb} from '../../../Redux/Actions';
 
 const { Search } = Input;
 
@@ -31,6 +33,7 @@ class MasterJabatan extends Component {
 
   componentDidMount() {
     this.fetchDivisions();
+    this.props.setBreadcrumb('Divisions');
   }
 
   fetchDivisions = () => {
@@ -328,5 +331,10 @@ class MasterJabatan extends Component {
     );
   }
 }
+const mapStateToProps = (state) => {
+  return {
+    breadcrumb: state.breadcrumb,
+  }
+}
 
-export default MasterJabatan;
+export default connect(mapStateToProps, { setBreadcrumb })(MasterJabatan);

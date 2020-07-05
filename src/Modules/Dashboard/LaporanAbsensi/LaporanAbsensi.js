@@ -5,6 +5,8 @@ import { SearchOutlined, PrinterOutlined } from '@ant-design/icons';
 import cx from 'classnames';
 import axios from 'axios';
 import s from '../Master.module.scss';
+import { connect } from 'react-redux';
+import {setBreadcrumb} from '../../../Redux/Actions';
 
 
 class LaporanAbsensi extends Component {
@@ -19,6 +21,7 @@ class LaporanAbsensi extends Component {
 
   componentDidMount() {
     this.fetchEmployee();
+    this.props.setBreadcrumb('Report');
   }
 
   fetchEmployee = () => {
@@ -115,4 +118,18 @@ class LaporanAbsensi extends Component {
   }
 }
 
-export default LaporanAbsensi;
+const mapStateToProps = (state) => {
+  return {
+    breadcrumb: state.breadcrumb,
+  }
+}
+
+// const mapDispatchToProps = (dispatch) => {
+//   return {
+//     setBreadcrumb: () => {
+//       dispatch(setBreadcrumb())
+//     },
+//   }
+// }
+
+export default connect(mapStateToProps, { setBreadcrumb })(LaporanAbsensi);

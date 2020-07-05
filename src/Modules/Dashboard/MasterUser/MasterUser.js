@@ -5,6 +5,8 @@ import cx from 'classnames';
 import axios from 'axios';
 import UserForm from './UserForm';
 import CreateUserForm from './CreateUserForm';
+import { connect } from 'react-redux';
+import {setBreadcrumb} from '../../../Redux/Actions';
 import s from '../Master.module.scss';
 
 const { Search } = Input;
@@ -31,6 +33,7 @@ class MasterUser extends Component {
 
   componentDidMount() {
     this.fetchUser();
+    this.props.setBreadcrumb('Users');
   }
 
   handleCreate = () => {
@@ -318,4 +321,18 @@ class MasterUser extends Component {
   }
 }
 
-export default MasterUser;
+const mapStateToProps = (state) => {
+  return {
+    breadcrumb: state.breadcrumb,
+  }
+}
+
+// const mapDispatchToProps = (dispatch) => {
+//   return {
+//     setBreadcrumb: () => {
+//       dispatch(setBreadcrumb())
+//     },
+//   }
+// }
+
+export default connect(mapStateToProps, { setBreadcrumb })(MasterUser);

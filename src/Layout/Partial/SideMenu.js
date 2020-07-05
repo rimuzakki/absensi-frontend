@@ -12,12 +12,41 @@ import {
   FileTextOutlined,
   QrcodeOutlined,
 } from '@ant-design/icons';
+import { connect } from 'react-redux';
+
 
 const { Sider } = Layout;
 const { SubMenu } = Menu;
 
 class SideMenu extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      selectedMenuKey: '',
+      openedMenuKey: '',
+    }
+  }
+
   render() {
+    let selectedMenuKey = '';
+    let openedMenuKey = 'sub1';
+    if (this.props.breadcrumb === 'Dashboard') {
+      selectedMenuKey = '1'
+    } else if (this.props.breadcrumb === 'Divisions') {
+      openedMenuKey = 'sub1'
+      selectedMenuKey = '2'
+    } else if (this.props.breadcrumb === 'Employees') {
+      openedMenuKey = 'sub1'
+      selectedMenuKey = '3'
+    } else if (this.props.breadcrumb === 'Users') {
+      openedMenuKey = 'sub1'
+      selectedMenuKey = '4'
+    } else if (this.props.breadcrumb === 'Report') {
+      selectedMenuKey = '5'
+    } else if (this.props.breadcrumb === 'Absensi') {
+      selectedMenuKey = '6'
+    }
+
     return (
       <Sider
         trigger={null}
@@ -34,7 +63,13 @@ class SideMenu extends Component {
         <div className="logo">
           {this.props.collapsed ? 'DDS' : 'Data Driven Systems'}
         </div>
-        <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
+        <Menu 
+          theme="dark" 
+          mode="inline" 
+          // defaultSelectedKeys={['1']}
+          selectedKeys={[selectedMenuKey]}  
+          defaultOpenKeys={[openedMenuKey]}
+        >
           <Menu.Item key="1">
             <Link to='/dashboard'>
               <DashboardOutlined />
@@ -71,7 +106,7 @@ class SideMenu extends Component {
           <Menu.Item key="5">
             <Link to='/dashboard/report'>
               <FileTextOutlined />
-              <span>Laporan absensi</span>
+              <span>Attendance report</span>
             </Link>
           </Menu.Item>
           <Menu.Item key="6">
@@ -86,4 +121,10 @@ class SideMenu extends Component {
   }
 }
 
-export default SideMenu;
+const mapStateToProps = (state) => {
+  return {
+    breadcrumb: state.breadcrumb,
+  }
+}
+
+export default connect(mapStateToProps)(SideMenu);
