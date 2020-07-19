@@ -90,7 +90,8 @@ class Index extends Component {
         key: 'status',
       },
     ];
-
+    
+    let uniqueId = 0;
 
     return (
       <div className={s.cardLayout}>
@@ -98,7 +99,16 @@ class Index extends Component {
           <h3>Todays presence</h3>
         </div>
 
-        <Table columns={columns} dataSource={this.state.data} scroll={{ y: 380 }} />
+        <Table 
+          columns={columns} 
+          dataSource={this.state.data} 
+          scroll={{ y: 380 }} 
+          rowKey={(record) => {
+            if (!record.__uniqueId)
+              record.__uniqueId = ++uniqueId;
+            return record.__uniqueId;
+          }}  
+        />
       </div>
     )
   }

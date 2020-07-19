@@ -106,13 +106,13 @@ class SideMenu extends Component {
           <Menu.Item key="5">
             <Link to='/dashboard/report'>
               <FileTextOutlined />
-              <span>Attendance report</span>
+              <span>Presence report</span>
             </Link>
           </Menu.Item>
           <Menu.Item key="6">
             <Link to='/absensi'>
               <QrcodeOutlined />
-              <span>Absensi</span>
+              <span>Presence</span>
             </Link>
           </Menu.Item>
         </Menu>
