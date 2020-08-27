@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { Layout, Menu, Row, Col, Input, Button, Form, Card, message } from 'antd';
+import { Layout, Menu, Row, Col, Radio, Input, Button, Form, Card, message } from 'antd';
 import QrReader from "react-qr-reader";
 // import QrReader from 'react-qr-scanner';
 import Moment from 'react-moment';
@@ -29,7 +29,6 @@ class Index extends Component {
       isLoading: false,
       dataEmployee: [],
       dataPresence: [],
-      dataPresences: [],
       playBeep: false,
       playFalse: false,
       cooldown: false,
@@ -95,23 +94,8 @@ class Index extends Component {
       })
   }
 
-  getPresence = (id_presence = '2020-08-0710001', callback = null) => {
-    axios.get(`presences?id_presence=${id_presence}`)
-      .then(res => {
-        console.log('dataPresences', res.data);
-        this.setState({
-          dataPresences: res.data,
-        })
-        callback();
-      })
-      .catch(err => {
-        console.log('error', err);
-      })
-  }
-
   handleScan = (data) => {
     const { cooldown } = this.state; 
-
     if (cooldown === false && data) {
       this.setState({
         result: data,
@@ -125,13 +109,8 @@ class Index extends Component {
       } else {
         nik = data;
       }
-      const dateIn = moment().format('YYYY-MM-DD');
-      const idPresence = _.join([dateIn, nik], '-');
-      // const idPresence = ('2020-08-21-10001');
       this.getEmployee(nik, () => {
-        this.getPresence(idPresence, () => {
-          this.onFinishForm(idPresence);
-        });
+        this.onFinishForm(nik);
       });
     }
   };
@@ -145,23 +124,22 @@ class Index extends Component {
     this.videoStream.openImageDialog();
   }
 
-  onChangeRadio = (e) => {
-    console.log('radio checked', e.target.value);
-    this.setState({
-      radioValue: e.target.value,
-    });
-  };
+  // onChangeRadio = (e) => {
+  //   console.log('radio checked', e.target.value);
+  //   this.setState({
+  //     radioValue: e.target.value,
+  //   });
+  // };
 
   onFinishForm = (values) => {
     const { 
-            dataEmployee,
-            dataPresences 
+            // radioValue, 
+            dataEmployee 
           } = this.state;
   
     const dateIn = moment().format('YYYY-MM-DD');
-    // const nik = values;
-    // const idPresence = _.join([dateIn, nik], '-');
-    const idPresence = values;
+    const nik = values;
+    const idPresence = _.join([dateIn, nik], '-');
     // const isWorking = radioValue === 1;
     // const isFinish = radioValue === 0;
     const timeNow = moment('10:00', 'HH:mm');
@@ -190,50 +168,46 @@ class Index extends Component {
     const minutesDuration = diffTime.asMinutes() - 60;
     console.log('workDuration', minutesDuration);
 
-    if (dataPresences.length > 0) {
-      console.log('ada', idPresence, dataPresences.length);
-      const dataPost = {
-        "time_out": timeNowStr,
-      }
-      console.log('dataPost', dataPost);
-      const idPresenceSystem = dataPresences[0].id;
+    const dataPost = {
+      "id_presence": idPresence,
+      "presence_date": dateIn,
+      "time_in": timeNowStr,
+      "employee": nik,
+    }
 
-      this.setState({
-        isLoading: true,
-      })
-      axios.put(`presences/${idPresenceSystem}` , dataPost)
-        .then(result => {
-          console.log('result', result);
-          this.setState({
-            dataPresence: dataPost,
-            cooldown: true,
-          })
-        }).catch(error => {
-          message.error('Check out not successfull')
-        })
-        this.setState({
-          isLoading: false,
-        })
-        setTimeout(() => {
-          this.setState({
-            dataPresence: [],
-            dataEmployee: [],
-            cooldown: false,
-          })
-        }, 2500);
+    // let dataPost = {};
+    // if (radioValue === 1) {
+    //   dataPost = {
+    //     "id_presence": idPresence,
+    //     // "is_working": isWorking,
+    //     "presence_date": dateIn,
+    //     "time_in": timeNowStr,
+    //     // "time_out": null,
+    //     // "minutes_late": totalMinutesLate,
+    //     // "work_minutes_duration": 0,
+    //     // "status": null,
+    //     // "is_finish": isFinish,
+    //     "employee": nik,
+    //   }
+    // } else {
+    //   dataPost = {
+    //     // "id_presence": idPresence,
+    //     // "is_working": isWorking,
+    //     // "presence_date": dateIn,
+    //     // "time_in": timeNowStr,
+    //     "time_out": timeNowStr,
+    //     // "minutes_late": totalMinutesLate,
+    //     "work_minutes_duration": minutesDuration,
+    //     // "status": null,
+    //     "is_finish": isFinish,
+    //     // "employee": {
+    //     //   "nik": nik,
+    //     // }
+    //   }
+    // }
+    console.log('dataPost', dataPost);
 
-    } else {
-      console.log('belum ada', idPresence, dataPresences.length);
-      const dataPost = {
-        "id_presence": idPresence,
-        "presence_date": dateIn,
-        "time_in": timeNowStr,
-        "time_out": null,
-        "minutes_late": totalMinutesLate,
-        "employee": dataEmployee[0].id,
-      }
-      console.log('dataPost', dataPost);
-
+    if (radioValue === 1) {
       this.setState({
         isLoading: true,
       })
@@ -257,11 +231,38 @@ class Index extends Component {
             cooldown: false,
           })
         }, 2500);
+
+    } else {
+
+      this.setState({
+        isLoading: true,
+      })
+      axios.put(`presences/${nik}` , dataPost)
+        .then(result => {
+          console.log('result', result);
+          this.getEmployee(nik);
+          this.setState({
+            dataPresence: dataPost,
+            cooldown: true,
+          })
+        }).catch(error => {
+          message.error('Check out not successfull')
+        })
+        this.setState({
+          isLoading: false,
+        })
+        setTimeout(() => {
+          this.setState({
+            dataPresence: [],
+            dataEmployee: [],
+            cooldown: false,
+          })
+        }, 2500);
     }
   }
 
   render() {
-    const { dataEmployee, dataPresence } = this.state;
+    const { dataEmployee, dataPresence, radioValue } = this.state;
     return (
       <Layout className={s.layout}>
         <Header className={s.header}>
@@ -290,6 +291,18 @@ class Index extends Component {
                       format="HH:mm:ss"
                     />
                   </div>
+                  {/* <div className={s.buttonInOut}>
+                    <Radio.Group 
+                      // defaultValue="a" 
+                      buttonStyle="solid" 
+                      className={s.radioButton}
+                      onChange={this.onChangeRadio} 
+                      value={this.state.radioValue}
+                    >
+                      <Radio.Button value={1}>Masuk</Radio.Button>
+                      <Radio.Button value={0}>Keluar</Radio.Button>
+                    </Radio.Group>
+                  </div> */}
                   <div className={s.qrBox}>
                     <h1>Silahkan scan QR Code anda</h1>
                     <QrReader 
@@ -328,9 +341,9 @@ class Index extends Component {
               </Col>
               <Col md={{ span: 10, offset: 1 }} xl={{ span: 12, offset: 2 }}>
                 <div className={s.infoArea}>
-                  {/* <h1>
+                  <h1>
                     {radioValue === 1 ? 'Masuk' : 'Keluar'}
-                  </h1> */}
+                  </h1>
                   <div className={s.photoUser}>
                     <UserOutlined />
                   </div>
