@@ -1,0 +1,126 @@
+check in
+{
+    "id": 23,
+    "id_presence": "2020-08-0710001",
+    // "is_working": true,
+    "presence_date": "2020-08-07",
+    "time_in": "08:00:00.000",
+    // "time_out": "17:00:00.000",
+    // "minutes_late": 0,
+    // "work_minutes_duration": 0,
+    // "status": null,
+    "created_at": "2020-08-06T18:05:51.000Z",
+    "updated_at": "2020-08-06T18:05:51.000Z",
+    // "is_finish": false,
+    "employee": {
+        "id": 1,
+        "nik": "10001",
+        "division": 36,
+        "fullname": "Rifqon",
+        "address": "Jalan Taman Mugas II, No. 5, Mugasari, Semarang, Jawa Tengah",
+        "phone": "08562711445",
+        "sex": "male",
+        "birth_date": "2001-08-23",
+        "created_at": "2020-05-09T12:49:42.000Z",
+        "updated_at": "2020-07-05T20:05:46.000Z"
+    }
+}
+
+check_in
+{
+  "id": 23,
+  "id_presence": "2020-08-07-10001",
+  "presence_date": "2020-08-07",
+  "check_time": "08:00:00.000",
+  "employee": {
+      "id": 1,
+  }
+},
+{
+  "id": 34,
+  "id_presence": "2020-08-07-10001",
+  "presence_date": "2020-08-07",
+  "check_time": "17:00:00.000",
+  "employee": {
+      "id": 1,
+  }
+}
+
+presence
+{
+  "id": 1,
+  "id_presence": "2020-08-0710001",
+  "presence_date": "2020-08-07",
+  "time_in": "08:00:00.000",
+  "time_out": "17:00:00.000",
+  "minutes_late": 0,
+  "employee": {
+      "id": 1,
+  }
+}
+
+1. mulai
+2. scan nik
+3. GET employee
+4. GET presence
+5. POST check_in
+6. cek if presence.id_presence ? PUT/presence.id : POST presence
+7. selesai
+
+absen masuk
+1. mulai
+2. scan nik = 10001
+3. GET employee = Rifqon Muzakki, 10001
+4. GET presence.id_presence = 0
+// 5. POST check_in
+//     {
+//       "id": 1,
+//       "id_presence": "2020-08-07-10001",
+//       "presence_date": "2020-08-07",
+//       "check_time": "08:00:00.000",
+//       "employee": {
+//           "id": 1,
+//       }
+//     },
+6. id_presence tidak ada, POST presence id = 1
+    {
+      "id": 1,
+      "id_presence": "2020-08-07-10001",
+      "presence_date": "2020-08-07",
+      "time_in": "08:00:00.000",
+      "time_out": null,
+      "minutes_late": null,
+      "employee": {
+          "id": 1,
+      }
+    }
+7. selesai
+
+absen keluar
+1. mulai
+2. scan nik = 10001
+3. GET employee = Rifqon Muzakki, 10001
+4. GET presence.id_presence > 0 (true)
+// 5. POST check_in
+//     {
+//       "id": 2,
+//       "id_presence": "2020-08-07-10001",
+//       "presence_date": "2020-08-07",
+//       "check_time": "17:00:00.000",
+//       "employee": {
+//           "id": 1,
+//       }
+//     },
+6. id_presence true, PUT/presence.id
+    {
+      "id": 1,
+      "id_presence": "2020-08-07-10001",
+      "presence_date": "2020-08-07",
+      "time_in": "08:00:00.000",
+      "time_out": "17:00:00.000",
+      "minutes_late": 0,
+      "employee": {
+          "id": 1,
+      }
+    }
+7. selesai

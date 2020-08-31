@@ -6,6 +6,7 @@ import axios from 'axios';
 import { connect } from 'react-redux';
 import {setBreadcrumb} from '../../../Redux/Actions';
 import EmployeeForm from './EmployeeForm';
+import Container from '../../../Layout/Container/Container';
 
 import s from '../Master.module.scss';
 
@@ -273,7 +274,7 @@ class MasterPegawai extends Component {
 
   render() {
     return (
-      <div>
+      <Container>
         <div className={cx('f f-btw', s.topSection)}>
           <Button type="primary" icon={<PlusOutlined />} onClick={this.handleCreate}>
             Add Employee
@@ -303,7 +304,7 @@ class MasterPegawai extends Component {
             onUpdate={this.onUpdate}
           />
         }
-      </div>
+      </Container>
     );
   }
 }

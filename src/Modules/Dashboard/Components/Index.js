@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
-import { Table} from 'antd';
+import { Table, Row, Col } from 'antd';
 import { CheckCircleOutlined, ClockCircleOutlined, ExclamationCircleOutlined, PlusCircleOutlined } from '@ant-design/icons';
 // import cx from 'classnames';
 import axios from 'axios';
 import Moment from 'react-moment';
+import moment from 'moment';
 import { connect } from 'react-redux';
 import {setBreadcrumb} from '../../../Redux/Actions';
 import s from '../Master.module.scss';
-
+import Container from '../../../Layout/Container/Container';
+import _ from 'lodash';
 
 class Index extends Component {
   constructor(props) {
@@ -15,22 +17,46 @@ class Index extends Component {
 
     this.state = {
       isLoadingData: false,
-      data: [],
+      dataPresence: [],
+      dataEmployee: [],
     }
   }
 
   componentDidMount() {
-    this.fetchEmployee();
+    this.fetchPresence();
+    this.fetchEmployees();
     this.props.setBreadcrumb('Dashboard');
   }
 
-  fetchEmployee = () => {
+  fetchPresence = (today = true) => {
     this.setState({ isLoadingData: true });
-    axios.get(`presences/`)
+    const dateIn = moment().format('YYYY-MM-DD');
+    let param = `presences/`;
+    if (today) {
+      param = `presences?presence_date=${dateIn}`;
+    }
+    axios.get(param)
       .then(res => {
         // console.log('res', res.data);
         this.setState({
-          data: res.data,
+          dataPresence: res.data,
+          isLoadingData: false,
+        })
+      })
+      .catch(err => {
+        this.setState({
+          isLoadingData: false
+        })
+      })
+  }
+
+  fetchEmployees = () => {
+    this.setState({ isLoadingData: true });
+    axios.get(`employees/`)
+      .then(res => {
+        console.log('res', res.data);
+        this.setState({
+          dataEmployee: res.data,
           isLoadingData: false,
         })
       })
@@ -84,11 +110,6 @@ class Index extends Component {
         dataIndex: 'minutes_late',
         key: 'minutes_late',
       },
-      {
-        title: 'Status',
-        dataIndex: 'status',
-        key: 'status',
-      },
     ];
     
     let uniqueId = 0;
@@ -101,7 +122,7 @@ class Index extends Component {
 
         <Table 
           columns={columns} 
-          dataSource={this.state.data} 
+          dataSource={this.state.dataPresence} 
           scroll={{ y: 380 }} 
           rowKey={(record) => {
             if (!record.__uniqueId)
@@ -114,37 +135,55 @@ class Index extends Component {
   }
 
   viewCard = () => {
+    const { dataPresence, dataEmployee } = this.state;
+    const alradyPresence = dataPresence.length;
+    const notPresence = dataEmployee.length - dataPresence.length;
+    const lateCount = _.filter(dataPresence, function(o) {
+      return o.minutes_late >= 30
+    })
+    const totalEmployee = dataEmployee.length;
     return (
       <div className={s.cardSection}>
-        <div className={s.card}>
-          <h3><CheckCircleOutlined /> Already presence</h3>
-          <p>10 <small>employee(s)</small></p>
-        </div>
+        <Row gutter={16}>
+          <Col span={6}>
+            <div className={s.card}>
+              <h3><CheckCircleOutlined /> Already presence</h3>
+              <p>{alradyPresence} <small>employee(s)</small></p>
+            </div>
+          </Col>
 
-        <div className={s.card}>
-          <h3><ClockCircleOutlined /> Not presence yet</h3>
-          <p>5 <small>employee(s)</small></p>
-        </div>
+          <Col span={6}>
+            <div className={s.card}>
+              <h3><ClockCircleOutlined /> Not presence yet</h3>
+              <p>{notPresence} <small>employee(s)</small></p>
+            </div>
+          </Col>
 
-        <div className={s.card}>
-          <h3><ExclamationCircleOutlined /> Late</h3>
-          <p>2 <small>employee(s)</small></p>
-        </div>
+          <Col span={6}>
+            <div className={s.card}>
+              <h3><ExclamationCircleOutlined />{`Late > 30 minutes`}</h3>
+              <p>{lateCount ? lateCount.length : 0} <small>employee(s)</small></p>
+            </div>
+          </Col>
 
-        <div className={s.card}>
-          <h3><PlusCircleOutlined /> Total employee</h3>
-          <p>15 <small>employee(s)</small></p>
-        </div>
+          <Col span={6}>
+          <div className={s.card}>
+            <h3><PlusCircleOutlined /> Total employee</h3>
+            <p>{totalEmployee} <small>employee(s)</small></p>
+          </div>
+          </Col>
+
+        </Row>
       </div>
     )
   }
 
   render() {
     return (
-      <div>
+      <Container>
         {this.viewCard()}
         {this.viewTable()}
-      </div>
+      </Container>
     );
   }
 }

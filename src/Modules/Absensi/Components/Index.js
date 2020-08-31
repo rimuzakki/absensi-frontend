@@ -13,6 +13,7 @@ import axios from 'axios';
 import beep from '../../../beep.mp3';
 import error from '../../../error.mp3'
 import { ClockCircleTwoTone } from '@ant-design/icons';
+import Container from '../../../Layout/Container/Container';
 
 const { Header, Content } = Layout;
 
@@ -164,7 +165,7 @@ class Index extends Component {
     const idPresence = values;
     // const isWorking = radioValue === 1;
     // const isFinish = radioValue === 0;
-    const timeNow = moment('10:00', 'HH:mm');
+    const timeNow = moment('17:15', 'HH:mm');
     const timeNowStr = moment(timeNow).format("HH:mm:ss");
     // const timeOut = radioValue === 0 ? moment() : null;
     // const timeOutStr = moment(timeOut).format("HH:mm");
@@ -276,94 +277,96 @@ class Index extends Component {
         </Header>
         <Content>
           <div className={s.contentLayout}>
-            <Row>
-              <Col md={{ span: 10, offset: 1 }} xl={{ span: 8, offset: 2 }}>
-                <div className={s.absenArea}>
-                  <div className={cx('f', s.dateTimeBox)}>
-                    <Moment
-                      className={s.date}
-                      format="D MMMM YYYY"
-                    />
-                    <Moment 
-                      className={s.time}
-                      interval={1000} 
-                      format="HH:mm:ss"
-                    />
-                  </div>
-                  <div className={s.qrBox}>
-                    <h1>Silahkan scan QR Code anda</h1>
-                    <QrReader 
-                      className={s.qrVideo}
-                      delay={500}
-                      onError={this.handleError}
-                      onScan={this.handleScan}
-                      style={{ width: 240 }}
-                      ref={ (videoStream) => { this.videoStream = videoStream } }
-                      // legacyMode
-                    />
-                    <p>atau masukkan PIN secara manual</p>
+            <Container>
+              <Row>
+                <Col md={{ span: 10, offset: 1 }} xl={{ span: 8, offset: 2 }}>
+                  <div className={s.absenArea}>
+                    <div className={cx('f', s.dateTimeBox)}>
+                      <Moment
+                        className={s.date}
+                        format="D MMMM YYYY"
+                      />
+                      <Moment 
+                        className={s.time}
+                        interval={1000} 
+                        format="HH:mm:ss"
+                      />
+                    </div>
+                    <div className={s.qrBox}>
+                      <h1>Silahkan scan QR Code anda</h1>
+                      <QrReader 
+                        className={s.qrVideo}
+                        delay={500}
+                        onError={this.handleError}
+                        onScan={this.handleScan}
+                        style={{ width: 240 }}
+                        ref={ (videoStream) => { this.videoStream = videoStream } }
+                        // legacyMode
+                      />
+                      <p>atau masukkan PIN secara manual</p>
 
-                    <Form name="absenForm" className={s.formManual} onFinish={this.handleScan}>
-                    <Form.Item
-                      name="idEmployee"
-                      rules={[
-                        {
-                          required: true,
-                          message: 'Please input your ID!',
-                        },
-                      ]}
-                    >
-                      <Input size="large" placeholder="Masukkan PIN anda" />
-                    </Form.Item>
-                    <Form.Item>
-                      <Button type="primary" size="large" htmlType="submit">
-                        Enter
-                      </Button>
-                    </Form.Item>
-                    </Form>
-                    {/* <input type="button" value="Submit QR Code" onClick={() => this.openImageDialog()} /> */}
-                    
+                      <Form name="absenForm" className={s.formManual} onFinish={this.handleScan}>
+                      <Form.Item
+                        name="idEmployee"
+                        rules={[
+                          {
+                            required: true,
+                            message: 'Please input your ID!',
+                          },
+                        ]}
+                      >
+                        <Input size="large" placeholder="Masukkan PIN anda" />
+                      </Form.Item>
+                      <Form.Item>
+                        <Button type="primary" size="large" htmlType="submit">
+                          Enter
+                        </Button>
+                      </Form.Item>
+                      </Form>
+                      {/* <input type="button" value="Submit QR Code" onClick={() => this.openImageDialog()} /> */}
+                      
+                    </div>
                   </div>
-                </div>
-              </Col>
-              <Col md={{ span: 10, offset: 1 }} xl={{ span: 12, offset: 2 }}>
-                <div className={s.infoArea}>
-                  {/* <h1>
-                    {radioValue === 1 ? 'Masuk' : 'Keluar'}
-                  </h1> */}
-                  <div className={s.photoUser}>
-                    <UserOutlined />
+                </Col>
+                <Col md={{ span: 10, offset: 1 }} xl={{ span: 12, offset: 2 }}>
+                  <div className={s.infoArea}>
+                    {/* <h1>
+                      {radioValue === 1 ? 'Masuk' : 'Keluar'}
+                    </h1> */}
+                    <div className={s.photoUser}>
+                      <UserOutlined />
+                    </div>
+                    {dataEmployee.length > 0 && dataEmployee !== 'notfound' ?
+                    <Card className={s.card} bordered={false}>
+                      <p className={s.clockIn}>
+                        {dataPresence.time_in ?
+                          <React.Fragment>
+                          <ClockCircleTwoTone style={{ marginRight: 8 }} /> 
+                          {moment(dataPresence.time_in, 'HH:mm').format('HH:mm')}
+                          </React.Fragment>
+                        : null }
+                      </p>
+                  
+                      { dataEmployee.map((c, i) => (
+                        <div key={i} className={s.dataIn}>
+                          <h3 className={s.pin}>{c.nik}</h3>
+                          <h1>{c.fullname}</h1>
+                          <small>{c.division.division_name}</small>
+                        </div>
+                      ))}
+                      </Card>
+                    : null }
+                    { dataEmployee === 'notfound' ? 
+                      <h1>Employee not found</h1>
+                    : null }
+                    { dataEmployee.length === 0 ?
+                      <h1>Data belum tersedia</h1>   
+                    : null
+                    }
                   </div>
-                  {dataEmployee.length > 0 && dataEmployee !== 'notfound' ?
-                  <Card className={s.card} bordered={false}>
-                    <p className={s.clockIn}>
-                      {dataPresence.time_in ?
-                        <React.Fragment>
-                        <ClockCircleTwoTone style={{ marginRight: 8 }} /> 
-                        {moment(dataPresence.time_in, 'HH:mm').format('HH:mm')}
-                        </React.Fragment>
-                      : null }
-                    </p>
-                
-                    { dataEmployee.map((c, i) => (
-                      <div key={i} className={s.dataIn}>
-                        <h3 className={s.pin}>{c.nik}</h3>
-                        <h1>{c.fullname}</h1>
-                        <small>{c.division.division_name}</small>
-                      </div>
-                    ))}
-                    </Card>
-                  : null }
-                  { dataEmployee === 'notfound' ? 
-                    <h1>Employee not found</h1>
-                  : null }
-                  { dataEmployee.length === 0 ?
-                    <h1>Data belum tersedia</h1>   
-                  : null
-                  }
-                </div>
-              </Col>
-            </Row>
+                </Col>
+              </Row>
+            </Container>
           </div>
         </Content>
       </Layout>

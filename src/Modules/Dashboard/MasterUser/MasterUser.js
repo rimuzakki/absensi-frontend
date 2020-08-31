@@ -8,6 +8,7 @@ import CreateUserForm from './CreateUserForm';
 import { connect } from 'react-redux';
 import {setBreadcrumb} from '../../../Redux/Actions';
 import s from '../Master.module.scss';
+import Container from '../../../Layout/Container/Container';
 
 const { Search } = Input;
 
@@ -269,7 +270,7 @@ class MasterUser extends Component {
 
   render() {
     return (
-      <div>
+      <Container>
         <div className={cx('f f-btw', s.topSection)}>
           <Button type="primary" icon={<PlusOutlined />} onClick={this.handleCreate}>
             Add User
@@ -316,7 +317,7 @@ class MasterUser extends Component {
           />
         }
 
-      </div>
+      </Container>
     );
   }
 }

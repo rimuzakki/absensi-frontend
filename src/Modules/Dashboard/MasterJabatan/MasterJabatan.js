@@ -9,6 +9,7 @@ import DivisionForm from './DivisionForm';
 import s from '../Master.module.scss';
 import { connect } from 'react-redux';
 import {setBreadcrumb} from '../../../Redux/Actions';
+import Container from '../../../Layout/Container/Container';
 
 const { Search } = Input;
 
@@ -286,7 +287,7 @@ class MasterJabatan extends Component {
 
   render() {
     return (
-      <div>
+      <Container>
         <div className={cx('f f-btw', s.topSection)}>
           <Button type="primary" icon={<PlusOutlined />} onClick={this.handleCreate}>
             Add Division
@@ -327,7 +328,7 @@ class MasterJabatan extends Component {
             onUpdate={this.onUpdate}
           />
         }
-      </div>
+      </Container>
     );
   }
 }

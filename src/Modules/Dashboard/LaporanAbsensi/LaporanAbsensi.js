@@ -7,6 +7,7 @@ import axios from 'axios';
 import s from '../Master.module.scss';
 import { connect } from 'react-redux';
 import {setBreadcrumb} from '../../../Redux/Actions';
+import Container from '../../../Layout/Container/Container';
 
 
 class LaporanAbsensi extends Component {
@@ -106,14 +107,14 @@ class LaporanAbsensi extends Component {
 
   render() {
     return (
-      <div>
+      <Container>
         <div className={cx('f', s.topSection, s.topLaporan)}>
           <DatePicker onChange={this.handleDateChange} picker="month" style={{ marginRight: 12 }}  />
           <Button type="primary" icon={<SearchOutlined />} />
           <Button type="primary" icon={<PrinterOutlined />} />
         </div>
         {this.viewTable()}
-      </div>
+      </Container>
     );
   }
 }
