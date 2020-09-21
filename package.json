@@ -16,6 +16,7 @@
     "moment": "^2.27.0",
     "node-sass": "^4.13.1",
     "qr-scanner": "^1.1.1",
+    "qs": "^6.9.4",
     "react": "^16.13.0",
     "react-app-rewired": "^2.1.5",
     "react-custom-scrollbars": "^4.2.1",

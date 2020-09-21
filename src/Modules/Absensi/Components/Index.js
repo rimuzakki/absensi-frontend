@@ -126,12 +126,12 @@ class Index extends Component {
       } else {
         nik = data;
       }
-      const dateIn = moment().format('YYYY-MM-DD');
+      const dateIn = moment('2020-09-22').format('YYYY-MM-DD');
       const idPresence = _.join([dateIn, nik], '-');
       // const idPresence = ('2020-08-21-10001');
       this.getEmployee(nik, () => {
         this.getPresence(idPresence, () => {
-          this.onFinishForm(idPresence);
+          this.onFinishForm(idPresence, dateIn);
         });
       });
     }
@@ -153,19 +153,19 @@ class Index extends Component {
     });
   };
 
-  onFinishForm = (values) => {
+  onFinishForm = (values, dateValue) => {
     const { 
             dataEmployee,
             dataPresences 
           } = this.state;
   
-    const dateIn = moment().format('YYYY-MM-DD');
+    const dateIn = dateValue;
     // const nik = values;
     // const idPresence = _.join([dateIn, nik], '-');
     const idPresence = values;
     // const isWorking = radioValue === 1;
     // const isFinish = radioValue === 0;
-    const timeNow = moment('17:15', 'HH:mm');
+    const timeNow = moment('08:00', 'HH:mm');
     const timeNowStr = moment(timeNow).format("HH:mm:ss");
     // const timeOut = radioValue === 0 ? moment() : null;
     // const timeOutStr = moment(timeOut).format("HH:mm");
