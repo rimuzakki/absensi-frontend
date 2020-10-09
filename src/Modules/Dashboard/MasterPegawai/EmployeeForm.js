@@ -5,6 +5,7 @@ import {
 } from 'antd';
 import moment from 'moment';
 import axios from 'axios';
+import QRCode from "react-qr-code";
 
 const { Option } = Select;
 
@@ -158,29 +159,34 @@ function EmployeeForm(props) {
               />
             </Form.Item>
 
-            <Form.Item
-              label="Phone number"
-              name="phone"
-              rules={[{ required: true, message: 'Please input Phone Number' }]}
-            >
-              <Input 
-                // onChange={this.handleChange} 
-                disabled={props.status === 'view' ? true : false} 
-              />
-            </Form.Item>
-
-            <Form.Item
-              label="Gender"
-              name="sex"
-              rules={[{ required: true, message: 'Please select Gender!' }]}
-            >
-              <Select defaultValue="male" disabled={props.status === 'view' ? true : false} style={{ width: 120 }} 
-                // onChange={this.handleChange}
-              >
-                <Option value="male">Male</Option>
-                <Option value="female">Female</Option>
-              </Select>
-            </Form.Item>
+            <Row gutter={16}>
+              <Col span={12}>
+                <Form.Item
+                  label="Phone number"
+                  name="phone"
+                  rules={[{ required: true, message: 'Please input Phone Number' }]}
+                >
+                  <Input 
+                    // onChange={this.handleChange} 
+                    disabled={props.status === 'view' ? true : false} 
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  label="Gender"
+                  name="sex"
+                  rules={[{ required: true, message: 'Please select Gender!' }]}
+                >
+                  <Select defaultValue="male" disabled={props.status === 'view' ? true : false} 
+                    // onChange={this.handleChange}
+                  >
+                    <Option value="male">Male</Option>
+                    <Option value="female">Female</Option>
+                  </Select>
+                </Form.Item>
+              </Col>
+            </Row>
 
             <Form.Item
               label="Address"
@@ -194,59 +200,67 @@ function EmployeeForm(props) {
               />
             </Form.Item>
 
-            <Form.Item
-              label="Division"
-              name="divisionId"
-              rules={[{ required: true, message: 'Please select Division!' }]}
-            >
-              <Select
-                showSearch 
-                disabled={props.status === 'view' ? true : false} 
-                style={{ width: 120 }} 
-                optionFilterProp="children"
-                filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
-                onChange={handleChangeDivision}
-              >
-                {
-                  dataDivision.map(division => {
-                    return (
-                      <Option value={division.id} key={division.id}>{division.division_name}</Option>
-                    )
-                  })
-                }
-              </Select>
-            </Form.Item>
+            <Row gutter={16}>
+              <Col span={12}>
+                <Form.Item
+                  label="Division"
+                  name="divisionId"
+                  rules={[{ required: true, message: 'Please select Division!' }]}
+                >
+                  <Select
+                    showSearch 
+                    disabled={props.status === 'view' ? true : false} 
+                    style={{ width: '100%' }} 
+                    optionFilterProp="children"
+                    filterOption={(input, option) =>
+                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
+                    onChange={handleChangeDivision}
+                  >
+                    {
+                      dataDivision.map(division => {
+                        return (
+                          <Option value={division.id} key={division.id}>{division.division_name}</Option>
+                        )
+                      })
+                    }
+                  </Select>
+                </Form.Item>
+              </Col>
 
-            <Form.Item
-              label="Start hours"
-              name="startHours"
-              {...config}
-            >
-              
-              <TimePicker
-                format={format}
-                disabled
-              />
-            </Form.Item>
+              <Col span={6}>
+                <Form.Item
+                  label="Start hours"
+                  name="startHours"
+                  {...config}
+                >
+                  
+                  <TimePicker
+                    format={format}
+                    disabled
+                  />
+                </Form.Item>
+              </Col>
 
-            <Form.Item
-              label="Finish hours"
-              name="finishHours"
-              {...config}
-            >
-              
-              <TimePicker
-                format={format}
-                disabled
-              />
-            </Form.Item>
+              <Col span={6}>
+                <Form.Item
+                  label="Finish hours"
+                  name="finishHours"
+                  {...config}
+                >
+                  
+                  <TimePicker
+                    format={format}
+                    disabled
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
+
+            <QRCode value={nik} />
 
           </Col>
         </Row>
-        
-
       </Form>
     )
   }

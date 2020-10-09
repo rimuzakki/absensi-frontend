@@ -23,13 +23,15 @@ class LaporanAbsensi extends Component {
       dataEmployees: [],
       dateSearch: moment().format('YYYY-MM'),
       nikSearch: '',
+      dateReport: '',
+      searchName: '',
     }
   }
 
   componentDidMount() {
-    const monthNow = moment().format('YYYY-MM');
+    // const monthNow = moment().format('YYYY-MM');
 
-    this.fetchPresences(monthNow);
+    // this.fetchPresences(monthNow);
     this.props.setBreadcrumb('Report');
     this.fetchEmployees();
   }
@@ -57,6 +59,8 @@ class LaporanAbsensi extends Component {
         this.setState({
           dataPresences: res.data,
           isLoadingData: false,
+          dateReport: date,
+          searchName: res.data[0].employee.fullname,
         })
       })
       .catch(err => {
@@ -161,24 +165,32 @@ class LaporanAbsensi extends Component {
       // }
     ];
 
+    const { dateReport, dataPresences, searchName } = this.state;
     let uniqueId = 0;
+    const monthNow = moment(dateReport).format('MMMM');
 
     return (
-      <div className={s.cardLayout}>
-        <div className={s.title}>
-          <h3>January presences report </h3>
-        </div>
+      dataPresences.length > 0 ? (
+        <div className={cx('toPrint', s.cardLayout)}>
+          <div className={s.title}>
+            <h3> {searchName} {monthNow} presences report </h3>
+          </div>
 
-        <Table 
-          columns={columns} 
-          dataSource={this.state.dataPresences} 
-          rowKey={(record) => {
-            if (!record.__uniqueId)
-              record.__uniqueId = ++uniqueId;
-            return record.__uniqueId;
-          }}
-        />
-      </div>
+          <Table 
+            columns={columns} 
+            dataSource={this.state.dataPresences} 
+            rowKey={(record) => {
+              if (!record.__uniqueId)
+                record.__uniqueId = ++uniqueId;
+              return record.__uniqueId;
+            }}
+          />
+        </div>
+      ) : (
+        <div className={cx('f mdl f-ctr', s.cardLayout)}>
+          <h1>No record found or Select date and employee first</h1>
+        </div>
+      )
     )
   }
 
@@ -187,7 +199,7 @@ class LaporanAbsensi extends Component {
     const { dataEmployees, dateSearch, nikSearch } = this.state;
     return (
       <Container>
-        <div className={cx('f', s.topSection, s.topLaporan)}>
+        <div className={cx('f hidePrint', s.topSection, s.topLaporan)}>
           <DatePicker 
             onChange={this.handleDateChange} 
             picker="month" 
@@ -214,7 +226,7 @@ class LaporanAbsensi extends Component {
             icon={<SearchOutlined />} 
             onClick={() => this.fetchPresences(dateSearch, nikSearch)} 
           />
-          <Button type="primary" icon={<PrinterOutlined />} />
+          <Button type="primary" icon={<PrinterOutlined />} onClick={() => window.print()} />
         </div>
         {this.viewTable()}
       </Container>
