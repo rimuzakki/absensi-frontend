@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { Table, Button, Input, Tooltip, Popconfirm, message } from 'antd';
-import { EyeOutlined, EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+import { EyeOutlined, EditOutlined, DeleteOutlined, PlusOutlined, IdcardOutlined } from '@ant-design/icons';
 import cx from 'classnames';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import {setBreadcrumb} from '../../../Redux/Actions';
 import EmployeeForm from './EmployeeForm';
 import Container from '../../../Layout/Container/Container';
+import ModalIdCard from './ModalIdCard';
 
 import s from '../Master.module.scss';
 
@@ -29,6 +30,8 @@ class MasterPegawai extends Component {
       pageSize: 8,
       total: 8,
       search: '',
+      modalIdCardVisible: false,
+      dataIdCard: [],
     }
   }
 
@@ -96,6 +99,7 @@ class MasterPegawai extends Component {
     // console.log(e);
     this.setState({
       modalVisible: false,
+      modalIdCardVisible: false,
     });
   };
 
@@ -103,6 +107,7 @@ class MasterPegawai extends Component {
     // console.log(e);
     this.setState({
       modalVisible: false,
+      modalIdCardVisible: false,
     });
   };
 
@@ -136,6 +141,13 @@ class MasterPegawai extends Component {
       status, 
       modalKey: Math.random(),
     });
+  }
+
+  handleShowIdCard = (record) => {
+    this.setState({
+      modalIdCardVisible: true,
+      dataIdCard: record,
+    })
   }
 
 
@@ -227,6 +239,9 @@ class MasterPegawai extends Component {
             <Tooltip title="Edit">
               <Button type="link" icon={<EditOutlined />} onClick={(e) => this.handleEdit(e, record.id, 'edit')} />
             </Tooltip>
+            <Tooltip title="Employee Card">
+              <Button type="link" icon={<IdcardOutlined />} onClick={() => this.handleShowIdCard(record)} />
+            </Tooltip>
             <Tooltip title="Hapus">
               <Popconfirm
                 title="Are you sure delete this task?"
@@ -304,6 +319,16 @@ class MasterPegawai extends Component {
             onUpdate={this.onUpdate}
           />
         }
+
+        <ModalIdCard 
+          onOk={this.handleOk}
+          onCancel={this.handleCancel}
+          modalKey={this.state.modalKey}
+          visible={this.state.modalIdCardVisible}
+          loading={this.state.isLoadingData}
+          title="ID Card"
+          data={this.state.dataIdCard}
+        />
       </Container>
     );
   }

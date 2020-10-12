@@ -126,7 +126,9 @@ class Index extends Component {
       } else {
         nik = data;
       }
-      const dateIn = moment('2020-09-22').format('YYYY-MM-DD');
+      // dummy
+      // const dateIn = moment('2020-09-22').format('YYYY-MM-DD');
+      const dateIn = moment().format('YYYY-MM-DD');
       const idPresence = _.join([dateIn, nik], '-');
       // const idPresence = ('2020-08-21-10001');
       this.getEmployee(nik, () => {
@@ -165,7 +167,10 @@ class Index extends Component {
     const idPresence = values;
     // const isWorking = radioValue === 1;
     // const isFinish = radioValue === 0;
-    const timeNow = moment('08:00', 'HH:mm');
+
+    // dummy
+    // const timeNow = moment('08:00', 'HH:mm');
+    const timeNow = moment().format('HH:mm')
     const timeNowStr = moment(timeNow).format("HH:mm:ss");
     // const timeOut = radioValue === 0 ? moment() : null;
     // const timeOutStr = moment(timeOut).format("HH:mm");
@@ -263,6 +268,8 @@ class Index extends Component {
 
   render() {
     const { dataEmployee, dataPresence } = this.state;
+    console.log('timeNow', moment().format('HH:mm'));
+
     return (
       <Layout className={s.layout}>
         <Header className={s.header}>
