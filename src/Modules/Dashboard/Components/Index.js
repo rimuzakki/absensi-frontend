@@ -103,7 +103,9 @@ class Index extends Component {
         title: 'Finish hour',
         dataIndex: 'time_out',
         key: 'time_out',
-        render: text => <span><Moment format="HH:mm" parse="HH:mm">{text}</Moment></span>,
+        render: text => <span>
+          {text ? <Moment format="HH:mm" parse="HH:mm">{text}</Moment> : '-' }
+        </span>,
       },
       {
         title: 'Minutes late',

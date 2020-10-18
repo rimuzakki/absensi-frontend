@@ -25,6 +25,9 @@ class LaporanAbsensi extends Component {
       nikSearch: '',
       dateReport: '',
       searchName: '',
+      currentPage: 1,
+      pageSize: 31,
+      total: 31,
     }
   }
 
@@ -119,10 +122,22 @@ class LaporanAbsensi extends Component {
     console.log('search:', val);
   }
 
+  handlePaginationClick = (e) => {
+    this.setState({
+      currentPage: e,
+      isLoadingData: false
+    })
+  }
+
   viewTable = () => {
     const columns = [
       {
-        title: 'id',
+        title: '#',
+        key: 'index',
+        render: (value, item, index) => (this.state.currentPage - 1) * this.state.pageSize + index + 1
+      },
+      {
+        title: 'ID Presence',
         dataIndex: 'id_presence',
         key: 'id_presence'
       },
@@ -183,6 +198,13 @@ class LaporanAbsensi extends Component {
               if (!record.__uniqueId)
                 record.__uniqueId = ++uniqueId;
               return record.__uniqueId;
+            }}
+            pagination={{ 
+              position: 'bottom', 
+              current: this.state.currentPage, 
+              pageSize: this.state.pageSize, 
+              // total: this.state.total, 
+              onChange: this.handlePaginationClick
             }}
           />
         </div>

@@ -162,25 +162,28 @@ class Index extends Component {
           } = this.state;
   
     const dateIn = dateValue;
+    const idPresence = values;
     // const nik = values;
     // const idPresence = _.join([dateIn, nik], '-');
-    const idPresence = values;
     // const isWorking = radioValue === 1;
     // const isFinish = radioValue === 0;
 
     // dummy
-    // const timeNow = moment('08:00', 'HH:mm');
-    const timeNow = moment().format('HH:mm')
+    // const timeNow = moment('08:10', 'HH:mm');
+    const timeNow = moment();
+    // const timeNow = moment().format('HH:mm');
+    console.log('timeNow', timeNow);
     const timeNowStr = moment(timeNow).format("HH:mm:ss");
     // const timeOut = radioValue === 0 ? moment() : null;
     // const timeOutStr = moment(timeOut).format("HH:mm");
 
-    console.log('timeNow', timeNow);
+    // console.log('timeNow', timeNow);
 
     // const idHelper = dataEmployee[0].id;
 
     const employeeStartHour = dataEmployee[0].division.work_hours.starting_hours;
     const startHour = moment(employeeStartHour, 'HH:mm');
+    console.log('startHour', startHour)
 
     const diffTime = moment.duration(timeNow.diff(startHour));
     const hoursLate = diffTime.hours();
@@ -190,8 +193,9 @@ class Index extends Component {
     console.log('lateTime', lateTimeStr);
 
     const totalMinutesLate = diffTime.asMinutes();
-    const toHours = moment(totalMinutesLate).minutes('HH:mm');
-    console.log('telat menit', totalMinutesLate, toHours);
+    const totalMinutesLateInt = Math.floor(totalMinutesLate);
+    // const toHours = moment(totalMinutesLate).minutes('HH:mm');
+    console.log('telat menit', totalMinutesLateInt);
 
     const minutesDuration = diffTime.asMinutes() - 60;
     console.log('workDuration', minutesDuration);
@@ -235,7 +239,7 @@ class Index extends Component {
         "presence_date": dateIn,
         "time_in": timeNowStr,
         "time_out": null,
-        "minutes_late": totalMinutesLate,
+        "minutes_late": totalMinutesLateInt,
         "employee": dataEmployee[0].id,
       }
       console.log('dataPost', dataPost);
@@ -268,7 +272,7 @@ class Index extends Component {
 
   render() {
     const { dataEmployee, dataPresence } = this.state;
-    console.log('timeNow', moment().format('HH:mm'));
+    // console.log('timeNow', moment().format('HH:mm'));
 
     return (
       <Layout className={s.layout}>
