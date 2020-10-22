@@ -37,7 +37,7 @@ class Login extends Component {
     setTimeout(() => {
       this.setState({ isLoading: true });
     }, 500);
-    axios.post('http://localhost:1337/auth/local', {
+    axios.post('auth/local', {
       identifier: values.identifier,
       password: values.password
     })
