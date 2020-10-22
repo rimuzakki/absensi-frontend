@@ -17,7 +17,8 @@ const store = createStore(
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 )
 
-axios.defaults.baseURL = 'http://localhost:1337/';
+// axios.defaults.baseURL = 'http://localhost:1337/';
+axios.defaults.baseURL = 'https://absensi-backend.ravaclo.com/';
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 
 const token = localStorage.getItem('jwtToken');
