@@ -13,7 +13,7 @@
     "customize-cra": "^0.9.1",
     "jsqr": "^1.2.0",
     "lodash": "^4.17.15",
-    "moment": "^2.27.0",
+    "moment": "^2.29.2",
     "node-sass": "^4.13.1",
     "qr-scanner": "^1.1.1",
     "qs": "^6.9.4",
